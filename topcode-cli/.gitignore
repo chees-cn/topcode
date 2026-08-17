@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.topcode/
+topcode-state.json
+topcode-state.json.tmp
+topcode-journal.jsonl
+*.tsbuildinfo

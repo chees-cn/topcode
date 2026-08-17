@@ -1,0 +1,25 @@
+# 依赖与构建产物
+node_modules/
+dist/
+
+# 密钥与本地凭证（严禁入库 —— CLAUDE.md 硬约束）
+配置信息.txt
+.env
+.env.*
+!.env.example
+
+# 运行时状态（本地流形存储）
+topcode-state.json
+topcode-journal.jsonl
+run-trace.jsonl
+
+# 内部工程文档（禁止提交到远程仓库）
+CLAUDE.md
+开发日志.md
+发现日志.md
+工程开发说明书.md
+研究纲领.md
+
+# 系统文件
+.DS_Store
+Thumbs.db

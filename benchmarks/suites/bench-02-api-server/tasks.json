@@ -1,0 +1,52 @@
+{
+  "suite": "bench-02-api-server",
+  "defaults": {
+    "timeout_s": 300,
+    "budgets": {
+      "max_actions": 12,
+      "max_est_tokens": 50000
+    }
+  },
+  "tasks": [
+    {
+      "id": "fix-email-validation",
+      "prompt": "测试套件里有邮箱校验相关的失败用例。请定位并修复，最后确认全部测试通过。",
+      "grader": "graders/fix-email-validation.mjs",
+      "budgets": {
+        "max_actions": 10,
+        "max_est_tokens": 50000
+      },
+      "overlay": "only-email-bug"
+    },
+    {
+      "id": "fix-role-filter",
+      "prompt": "GET /users?role=admin 没有按角色过滤，对应测试在失败。请修复，最后确认全部测试通过。",
+      "grader": "graders/fix-role-filter.mjs",
+      "budgets": {
+        "max_actions": 10,
+        "max_est_tokens": 50000
+      },
+      "overlay": "only-role-bug"
+    },
+    {
+      "id": "add-delete-endpoint",
+      "prompt": "给这个 API 添加 DELETE /users/:id 端点：用户存在则删除并返回 204，不存在返回 404。同时补充对应的自动化测试。完成后确认全部测试通过。",
+      "grader": "graders/add-delete-endpoint.mjs",
+      "budgets": {
+        "max_actions": 14,
+        "max_est_tokens": 60000
+      },
+      "overlay": "no-bugs"
+    },
+    {
+      "id": "refactor-not-found",
+      "prompt": "src/router.js 中 404 响应逻辑重复出现。请使用 hash 锚定的 edits（payload.edits，不要全量重写），把 404 响应抽成独立的 notFound(res) 函数，并替换所有重复点。保证全部测试通过。",
+      "grader": "graders/refactor-not-found.mjs",
+      "budgets": {
+        "max_actions": 12,
+        "max_est_tokens": 50000
+      },
+      "overlay": "no-bugs"
+    }
+  ]
+}

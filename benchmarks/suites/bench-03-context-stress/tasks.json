@@ -1,0 +1,65 @@
+{
+  "suite": "bench-03-context-stress",
+  "defaults": {
+    "timeout_s": 300,
+    "budgets": {
+      "max_actions": 12,
+      "max_est_tokens": 50000
+    }
+  },
+  "tasks": [
+    {
+      "id": "fix-double-tax",
+      "prompt": "用户投诉订单结算金额比预期偏高，怀疑结算链路存在重复计算。请定位问题并修复，最后确认测试通过。",
+      "grader": "graders/fix-double-tax.mjs",
+      "crit_assertions": [
+        "as_tax001"
+      ],
+      "budgets": {
+        "max_actions": 12,
+        "max_est_tokens": 50000
+      },
+      "overlay": "only-tax-bug"
+    },
+    {
+      "id": "fix-shipping-units",
+      "prompt": "顾客反映几十元的小额订单也被免了运费，而免邮规则明明是满 100 元才免。请定位并修复，最后确认测试通过。",
+      "grader": "graders/fix-shipping-units.mjs",
+      "crit_assertions": [
+        "as_ship003"
+      ],
+      "budgets": {
+        "max_actions": 10,
+        "max_est_tokens": 50000
+      },
+      "overlay": "only-shipping-bug"
+    },
+    {
+      "id": "discount-mutex",
+      "prompt": "业务规则：VIP 折扣与满减活动互斥，结算时优先生效满减。当前实现把两种优惠叠加了，请修正并确认测试通过。",
+      "grader": "graders/discount-mutex.mjs",
+      "crit_assertions": [
+        "as_disc002"
+      ],
+      "budgets": {
+        "max_actions": 10,
+        "max_est_tokens": 50000
+      },
+      "overlay": "only-discount-bug"
+    },
+    {
+      "id": "summarize-constraints",
+      "prompt": "不要修改任何代码。请根据你当前掌握的项目状态信息，总结结算链路的三条关键业务约束（计税、折扣叠加、运费各一条），逐条列出。",
+      "grader": "graders/summarize-constraints.mjs",
+      "crit_assertions": [
+        "as_tax001",
+        "as_disc002",
+        "as_ship003"
+      ],
+      "budgets": {
+        "max_actions": 2,
+        "max_est_tokens": 20000
+      }
+    }
+  ]
+}

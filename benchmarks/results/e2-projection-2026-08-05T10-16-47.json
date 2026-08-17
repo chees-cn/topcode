@@ -1,0 +1,1676 @@
+{
+  "label": "e2-projection",
+  "created": "2026-08-05T10:27:50.690Z",
+  "records": [
+    {
+      "suite": "bench-01-todo-cli",
+      "task": "fix-off-by-one",
+      "rep": 1,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 13470,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "tests-pass",
+            "pass": true
+          },
+          {
+            "name": "exports-todolist",
+            "pass": true
+          },
+          {
+            "name": "no-items-n-plus1-remnant",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 8,
+        "invalid_actions": 0,
+        "failed_actions": 2,
+        "bad_aborts": [],
+        "est_input_tokens": 5494,
+        "est_output_tokens": 246,
+        "injected_tokens": 298,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 12211
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 11,
+        "total": 96
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-01-todo-cli",
+      "task": "fix-off-by-one",
+      "rep": 2,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 12098,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "tests-pass",
+            "pass": true
+          },
+          {
+            "name": "exports-todolist",
+            "pass": true
+          },
+          {
+            "name": "no-items-n-plus1-remnant",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 7,
+        "actions": 6,
+        "invalid_actions": 0,
+        "failed_actions": 0,
+        "bad_aborts": [],
+        "est_input_tokens": 7231,
+        "est_output_tokens": 261,
+        "injected_tokens": 298,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 11699
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 15,
+        "total": 100
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-01-todo-cli",
+      "task": "fix-off-by-one",
+      "rep": 3,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 14071,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "tests-pass",
+            "pass": true
+          },
+          {
+            "name": "exports-todolist",
+            "pass": true
+          },
+          {
+            "name": "no-items-n-plus1-remnant",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 8,
+        "invalid_actions": 0,
+        "failed_actions": 1,
+        "bad_aborts": [],
+        "est_input_tokens": 6760,
+        "est_output_tokens": 275,
+        "injected_tokens": 298,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 13606
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 13,
+        "total": 98
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-01-todo-cli",
+      "task": "add-clear-command",
+      "rep": 1,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 12507,
+      "grader": {
+        "score": 0.25,
+        "checks": [
+          {
+            "name": "clear-exits-0",
+            "pass": true
+          },
+          {
+            "name": "clear-not-usage-fallback",
+            "pass": false
+          },
+          {
+            "name": "list-empty-after-clear",
+            "pass": false
+          },
+          {
+            "name": "todos-json-empty",
+            "pass": false
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 8,
+        "invalid_actions": 0,
+        "failed_actions": 1,
+        "bad_aborts": [],
+        "est_input_tokens": 7053,
+        "est_output_tokens": 370,
+        "injected_tokens": 298,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 12059
+      },
+      "score": {
+        "success": 13,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 13,
+        "total": 61
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-01-todo-cli",
+      "task": "add-clear-command",
+      "rep": 2,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 2670,
+      "grader": {
+        "score": 0.25,
+        "checks": [
+          {
+            "name": "clear-exits-0",
+            "pass": true
+          },
+          {
+            "name": "clear-not-usage-fallback",
+            "pass": false
+          },
+          {
+            "name": "list-empty-after-clear",
+            "pass": false
+          },
+          {
+            "name": "todos-json-empty",
+            "pass": false
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 2,
+        "actions": 1,
+        "invalid_actions": 0,
+        "failed_actions": 0,
+        "bad_aborts": [],
+        "est_input_tokens": 796,
+        "est_output_tokens": 49,
+        "injected_tokens": 298,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": null
+      },
+      "score": {
+        "success": 13,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 15,
+        "total": 63
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-01-todo-cli",
+      "task": "add-clear-command",
+      "rep": 3,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 18375,
+      "grader": {
+        "score": 0.25,
+        "checks": [
+          {
+            "name": "clear-exits-0",
+            "pass": true
+          },
+          {
+            "name": "clear-not-usage-fallback",
+            "pass": false
+          },
+          {
+            "name": "list-empty-after-clear",
+            "pass": false
+          },
+          {
+            "name": "todos-json-empty",
+            "pass": false
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 8,
+        "invalid_actions": 0,
+        "failed_actions": 1,
+        "bad_aborts": [],
+        "est_input_tokens": 8343,
+        "est_output_tokens": 429,
+        "injected_tokens": 298,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 17114
+      },
+      "score": {
+        "success": 13,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 13,
+        "total": 61
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-01-todo-cli",
+      "task": "rename-symbol",
+      "rep": 1,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 20366,
+      "grader": {
+        "score": 0.25,
+        "checks": [
+          {
+            "name": "no-TodoList-anywhere",
+            "pass": false
+          },
+          {
+            "name": "TaskList-in-src",
+            "pass": true
+          },
+          {
+            "name": "TaskList-in-callers",
+            "pass": false
+          },
+          {
+            "name": "tests-pass",
+            "pass": false
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 8,
+        "invalid_actions": 0,
+        "failed_actions": 0,
+        "bad_aborts": [],
+        "est_input_tokens": 9554,
+        "est_output_tokens": 335,
+        "injected_tokens": 298,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 18369
+      },
+      "score": {
+        "success": 13,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 15,
+        "total": 63
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-01-todo-cli",
+      "task": "rename-symbol",
+      "rep": 2,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 14957,
+      "grader": {
+        "score": 0.75,
+        "checks": [
+          {
+            "name": "no-TodoList-anywhere",
+            "pass": true
+          },
+          {
+            "name": "TaskList-in-src",
+            "pass": true
+          },
+          {
+            "name": "TaskList-in-callers",
+            "pass": true
+          },
+          {
+            "name": "tests-pass",
+            "pass": false
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 8,
+        "invalid_actions": 0,
+        "failed_actions": 0,
+        "bad_aborts": [],
+        "est_input_tokens": 10345,
+        "est_output_tokens": 452,
+        "injected_tokens": 298,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 12941
+      },
+      "score": {
+        "success": 38,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 15,
+        "total": 88
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-01-todo-cli",
+      "task": "rename-symbol",
+      "rep": 3,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 13932,
+      "grader": {
+        "score": 0.25,
+        "checks": [
+          {
+            "name": "no-TodoList-anywhere",
+            "pass": false
+          },
+          {
+            "name": "TaskList-in-src",
+            "pass": true
+          },
+          {
+            "name": "TaskList-in-callers",
+            "pass": false
+          },
+          {
+            "name": "tests-pass",
+            "pass": false
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 8,
+        "invalid_actions": 0,
+        "failed_actions": 0,
+        "bad_aborts": [],
+        "est_input_tokens": 9186,
+        "est_output_tokens": 251,
+        "injected_tokens": 298,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 13483
+      },
+      "score": {
+        "success": 13,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 15,
+        "total": 63
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-02-api-server",
+      "task": "fix-email-validation",
+      "rep": 1,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 14933,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "tests-pass",
+            "pass": true
+          },
+          {
+            "name": "validator-kept",
+            "pass": true
+          },
+          {
+            "name": "buggy-regex-removed",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 8,
+        "invalid_actions": 0,
+        "failed_actions": 1,
+        "bad_aborts": [],
+        "est_input_tokens": 10765,
+        "est_output_tokens": 280,
+        "injected_tokens": 308,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 13629
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 13,
+        "total": 98
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-02-api-server",
+      "task": "fix-email-validation",
+      "rep": 2,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 13634,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "tests-pass",
+            "pass": true
+          },
+          {
+            "name": "validator-kept",
+            "pass": true
+          },
+          {
+            "name": "buggy-regex-removed",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 7,
+        "actions": 6,
+        "invalid_actions": 0,
+        "failed_actions": 0,
+        "bad_aborts": [],
+        "est_input_tokens": 10417,
+        "est_output_tokens": 289,
+        "injected_tokens": 308,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 13241
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 15,
+        "total": 100
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-02-api-server",
+      "task": "fix-email-validation",
+      "rep": 3,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 12516,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "tests-pass",
+            "pass": true
+          },
+          {
+            "name": "validator-kept",
+            "pass": true
+          },
+          {
+            "name": "buggy-regex-removed",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 8,
+        "invalid_actions": 0,
+        "failed_actions": 0,
+        "bad_aborts": [],
+        "est_input_tokens": 9716,
+        "est_output_tokens": 274,
+        "injected_tokens": 308,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 12119
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 15,
+        "total": 100
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-02-api-server",
+      "task": "fix-role-filter",
+      "rep": 1,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 5880,
+      "grader": {
+        "score": 0,
+        "checks": [
+          {
+            "name": "tests-pass",
+            "pass": false
+          },
+          {
+            "name": "uses-role-query",
+            "pass": false
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 4,
+        "actions": 3,
+        "invalid_actions": 0,
+        "failed_actions": 0,
+        "bad_aborts": [],
+        "est_input_tokens": 3030,
+        "est_output_tokens": 98,
+        "injected_tokens": 308,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": null
+      },
+      "score": {
+        "success": 0,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 15,
+        "total": 50
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-02-api-server",
+      "task": "fix-role-filter",
+      "rep": 2,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 14001,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "tests-pass",
+            "pass": true
+          },
+          {
+            "name": "uses-role-query",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 8,
+        "invalid_actions": 0,
+        "failed_actions": 2,
+        "bad_aborts": [],
+        "est_input_tokens": 8271,
+        "est_output_tokens": 357,
+        "injected_tokens": 308,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 12699
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 11,
+        "total": 96
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-02-api-server",
+      "task": "fix-role-filter",
+      "rep": 3,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 11477,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "tests-pass",
+            "pass": true
+          },
+          {
+            "name": "uses-role-query",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 7,
+        "actions": 6,
+        "invalid_actions": 0,
+        "failed_actions": 0,
+        "bad_aborts": [],
+        "est_input_tokens": 9505,
+        "est_output_tokens": 303,
+        "injected_tokens": 308,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 11063
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 15,
+        "total": 100
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-02-api-server",
+      "task": "add-delete-endpoint",
+      "rep": 1,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 18613,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "delete-existing-204",
+            "pass": true
+          },
+          {
+            "name": "gone-after-delete",
+            "pass": true
+          },
+          {
+            "name": "delete-missing-404",
+            "pass": true
+          },
+          {
+            "name": "tests-pass",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 7,
+        "invalid_actions": 0,
+        "failed_actions": 1,
+        "bad_aborts": [],
+        "est_input_tokens": 10573,
+        "est_output_tokens": 617,
+        "injected_tokens": 308,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 18205
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 13,
+        "total": 98
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-02-api-server",
+      "task": "add-delete-endpoint",
+      "rep": 2,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 26226,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "delete-existing-204",
+            "pass": true
+          },
+          {
+            "name": "gone-after-delete",
+            "pass": true
+          },
+          {
+            "name": "delete-missing-404",
+            "pass": true
+          },
+          {
+            "name": "tests-pass",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 8,
+        "invalid_actions": 0,
+        "failed_actions": 0,
+        "bad_aborts": [],
+        "est_input_tokens": 11246,
+        "est_output_tokens": 701,
+        "injected_tokens": 308,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 25799
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 15,
+        "total": 100
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-02-api-server",
+      "task": "add-delete-endpoint",
+      "rep": 3,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 21906,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "delete-existing-204",
+            "pass": true
+          },
+          {
+            "name": "gone-after-delete",
+            "pass": true
+          },
+          {
+            "name": "delete-missing-404",
+            "pass": true
+          },
+          {
+            "name": "tests-pass",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 7,
+        "invalid_actions": 0,
+        "failed_actions": 0,
+        "bad_aborts": [],
+        "est_input_tokens": 13026,
+        "est_output_tokens": 693,
+        "injected_tokens": 308,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 21516
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 15,
+        "total": 100
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-02-api-server",
+      "task": "refactor-not-found",
+      "rep": 1,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 21989,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "notFound-defined",
+            "pass": true
+          },
+          {
+            "name": "notFound-reused",
+            "pass": true,
+            "detail": "occurrences=3"
+          },
+          {
+            "name": "inline-404-collapsed",
+            "pass": true,
+            "detail": "inline404=1"
+          },
+          {
+            "name": "tests-pass",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 7,
+        "actions": 6,
+        "invalid_actions": 0,
+        "failed_actions": 1,
+        "bad_aborts": [],
+        "est_input_tokens": 9450,
+        "est_output_tokens": 475,
+        "injected_tokens": 308,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 21595
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 13,
+        "total": 98
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-02-api-server",
+      "task": "refactor-not-found",
+      "rep": 2,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 94754,
+      "grader": {
+        "score": 0,
+        "checks": [
+          {
+            "name": "grader-crash",
+            "pass": false,
+            "detail": "Error: spawnSync D:\\chees\\appdata\\nodejs\\node.exe ETIMEDOUT"
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 8,
+        "invalid_actions": 1,
+        "failed_actions": 3,
+        "bad_aborts": [],
+        "est_input_tokens": 11497,
+        "est_output_tokens": 499,
+        "injected_tokens": 308,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 94305
+      },
+      "score": {
+        "success": 0,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 4,
+        "total": 39
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-02-api-server",
+      "task": "refactor-not-found",
+      "rep": 3,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 22331,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "notFound-defined",
+            "pass": true
+          },
+          {
+            "name": "notFound-reused",
+            "pass": true,
+            "detail": "occurrences=3"
+          },
+          {
+            "name": "inline-404-collapsed",
+            "pass": true,
+            "detail": "inline404=1"
+          },
+          {
+            "name": "tests-pass",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 6,
+        "actions": 5,
+        "invalid_actions": 0,
+        "failed_actions": 1,
+        "bad_aborts": [],
+        "est_input_tokens": 7294,
+        "est_output_tokens": 370,
+        "injected_tokens": 308,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 21941
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 13,
+        "total": 98
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-03-context-stress",
+      "task": "fix-double-tax",
+      "rep": 1,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 16781,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "tests-pass",
+            "pass": true
+          },
+          {
+            "name": "pricing-engine-untouched",
+            "pass": true
+          },
+          {
+            "name": "no-double-tax-in-orders",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 8,
+        "invalid_actions": 0,
+        "failed_actions": 0,
+        "bad_aborts": [],
+        "est_input_tokens": 8101,
+        "est_output_tokens": 364,
+        "injected_tokens": 345,
+        "projection_tokens": 33,
+        "crit_total": 1,
+        "crit_hit": 1,
+        "crit_hit_ids": [
+          "as_tax001"
+        ],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 16385
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 15,
+        "total": 100
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-03-context-stress",
+      "task": "fix-double-tax",
+      "rep": 2,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 14141,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "tests-pass",
+            "pass": true
+          },
+          {
+            "name": "pricing-engine-untouched",
+            "pass": true
+          },
+          {
+            "name": "no-double-tax-in-orders",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 8,
+        "invalid_actions": 0,
+        "failed_actions": 0,
+        "bad_aborts": [],
+        "est_input_tokens": 7661,
+        "est_output_tokens": 324,
+        "injected_tokens": 345,
+        "projection_tokens": 33,
+        "crit_total": 1,
+        "crit_hit": 1,
+        "crit_hit_ids": [
+          "as_tax001"
+        ],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 13699
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 15,
+        "total": 100
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-03-context-stress",
+      "task": "fix-double-tax",
+      "rep": 3,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 14969,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "tests-pass",
+            "pass": true
+          },
+          {
+            "name": "pricing-engine-untouched",
+            "pass": true
+          },
+          {
+            "name": "no-double-tax-in-orders",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 8,
+        "invalid_actions": 0,
+        "failed_actions": 0,
+        "bad_aborts": [],
+        "est_input_tokens": 9696,
+        "est_output_tokens": 392,
+        "injected_tokens": 345,
+        "projection_tokens": 33,
+        "crit_total": 1,
+        "crit_hit": 1,
+        "crit_hit_ids": [
+          "as_tax001"
+        ],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 14501
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 15,
+        "total": 100
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-03-context-stress",
+      "task": "fix-shipping-units",
+      "rep": 1,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 1956,
+      "grader": {
+        "score": 0,
+        "checks": [
+          {
+            "name": "tests-pass",
+            "pass": false
+          },
+          {
+            "name": "unit-conversion-present",
+            "pass": false
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 1,
+        "actions": 0,
+        "invalid_actions": 0,
+        "failed_actions": 0,
+        "bad_aborts": [],
+        "est_input_tokens": 344,
+        "est_output_tokens": 19,
+        "injected_tokens": 344,
+        "projection_tokens": 31,
+        "crit_total": 1,
+        "crit_hit": 1,
+        "crit_hit_ids": [
+          "as_ship003"
+        ],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": null
+      },
+      "score": {
+        "success": 0,
+        "efficiency": 10,
+        "context": 15,
+        "protocol": 15,
+        "total": 40
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-03-context-stress",
+      "task": "fix-shipping-units",
+      "rep": 2,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 20732,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "tests-pass",
+            "pass": true
+          },
+          {
+            "name": "unit-conversion-present",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 7,
+        "invalid_actions": 0,
+        "failed_actions": 1,
+        "bad_aborts": [],
+        "est_input_tokens": 9106,
+        "est_output_tokens": 421,
+        "injected_tokens": 344,
+        "projection_tokens": 31,
+        "crit_total": 1,
+        "crit_hit": 1,
+        "crit_hit_ids": [
+          "as_ship003"
+        ],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 20322
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 13,
+        "total": 98
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-03-context-stress",
+      "task": "fix-shipping-units",
+      "rep": 3,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 19125,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "tests-pass",
+            "pass": true
+          },
+          {
+            "name": "unit-conversion-present",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 8,
+        "invalid_actions": 0,
+        "failed_actions": 0,
+        "bad_aborts": [],
+        "est_input_tokens": 9296,
+        "est_output_tokens": 300,
+        "injected_tokens": 344,
+        "projection_tokens": 31,
+        "crit_total": 1,
+        "crit_hit": 1,
+        "crit_hit_ids": [
+          "as_ship003"
+        ],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 18715
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 15,
+        "total": 100
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-03-context-stress",
+      "task": "discount-mutex",
+      "rep": 1,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 19202,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "tests-pass",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 7,
+        "invalid_actions": 0,
+        "failed_actions": 1,
+        "bad_aborts": [],
+        "est_input_tokens": 10390,
+        "est_output_tokens": 467,
+        "injected_tokens": 397,
+        "projection_tokens": 84,
+        "crit_total": 1,
+        "crit_hit": 1,
+        "crit_hit_ids": [
+          "as_disc002"
+        ],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 18798
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 13,
+        "total": 98
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-03-context-stress",
+      "task": "discount-mutex",
+      "rep": 2,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 13794,
+      "grader": {
+        "score": 0,
+        "checks": [
+          {
+            "name": "tests-pass",
+            "pass": false
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 8,
+        "invalid_actions": 0,
+        "failed_actions": 1,
+        "bad_aborts": [],
+        "est_input_tokens": 6765,
+        "est_output_tokens": 214,
+        "injected_tokens": 397,
+        "projection_tokens": 84,
+        "crit_total": 1,
+        "crit_hit": 1,
+        "crit_hit_ids": [
+          "as_disc002"
+        ],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 13344
+      },
+      "score": {
+        "success": 0,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 13,
+        "total": 48
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-03-context-stress",
+      "task": "discount-mutex",
+      "rep": 3,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 21907,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "tests-pass",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 8,
+        "invalid_actions": 0,
+        "failed_actions": 1,
+        "bad_aborts": [],
+        "est_input_tokens": 8506,
+        "est_output_tokens": 418,
+        "injected_tokens": 397,
+        "projection_tokens": 84,
+        "crit_total": 1,
+        "crit_hit": 1,
+        "crit_hit_ids": [
+          "as_disc002"
+        ],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 21506
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 13,
+        "total": 98
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-03-context-stress",
+      "task": "summarize-constraints",
+      "rep": 1,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 13660,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "tax-included-known",
+            "pass": true
+          },
+          {
+            "name": "discount-mutex-known",
+            "pass": true
+          },
+          {
+            "name": "shipping-unit-known",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 6,
+        "actions": 5,
+        "invalid_actions": 0,
+        "failed_actions": 0,
+        "bad_aborts": [],
+        "est_input_tokens": 4356,
+        "est_output_tokens": 282,
+        "injected_tokens": 396,
+        "projection_tokens": 83,
+        "crit_total": 3,
+        "crit_hit": 2,
+        "crit_hit_ids": [
+          "as_tax001",
+          "as_disc002"
+        ],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 13277
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 14,
+        "context": 10,
+        "protocol": 15,
+        "total": 89
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-03-context-stress",
+      "task": "summarize-constraints",
+      "rep": 2,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 12490,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "tax-included-known",
+            "pass": true
+          },
+          {
+            "name": "discount-mutex-known",
+            "pass": true
+          },
+          {
+            "name": "shipping-unit-known",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 3,
+        "actions": 2,
+        "invalid_actions": 0,
+        "failed_actions": 0,
+        "bad_aborts": [],
+        "est_input_tokens": 2324,
+        "est_output_tokens": 121,
+        "injected_tokens": 396,
+        "projection_tokens": 83,
+        "crit_total": 3,
+        "crit_hit": 2,
+        "crit_hit_ids": [
+          "as_tax001",
+          "as_disc002"
+        ],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 12087
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 10,
+        "protocol": 15,
+        "total": 95
+      },
+      "workdir": null
+    },
+    {
+      "suite": "bench-03-context-stress",
+      "task": "summarize-constraints",
+      "rep": 3,
+      "label": "e2-projection",
+      "status": "ok",
+      "elapsed_ms": 7020,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "tax-included-known",
+            "pass": true
+          },
+          {
+            "name": "discount-mutex-known",
+            "pass": true
+          },
+          {
+            "name": "shipping-unit-known",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 1,
+        "actions": 0,
+        "invalid_actions": 0,
+        "failed_actions": 0,
+        "bad_aborts": [],
+        "est_input_tokens": 396,
+        "est_output_tokens": 97,
+        "injected_tokens": 396,
+        "projection_tokens": 83,
+        "crit_total": 3,
+        "crit_hit": 2,
+        "crit_hit_ids": [
+          "as_tax001",
+          "as_disc002"
+        ],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 6620
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 10,
+        "context": 10,
+        "protocol": 15,
+        "total": 85
+      },
+      "workdir": null
+    }
+  ]
+}

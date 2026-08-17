@@ -1,0 +1,27 @@
+{
+  "suite": "bench-01-todo-cli",
+  "defaults": {
+    "timeout_s": 240,
+    "budgets": { "max_actions": 8, "max_est_tokens": 30000 }
+  },
+  "tasks": [
+    {
+      "id": "fix-off-by-one",
+      "prompt": "这个项目的测试有失败用例。请先运行测试定位问题，再修复，最后确认测试全部通过。",
+      "grader": "graders/fix-off-by-one.mjs",
+      "budgets": { "max_actions": 8, "max_est_tokens": 30000 }
+    },
+    {
+      "id": "add-clear-command",
+      "prompt": "给这个 todo CLI 添加 clear 命令：删除所有待办事项，执行后 list 应显示空。完成后用命令实际验证一遍。",
+      "grader": "graders/add-clear-command.mjs",
+      "budgets": { "max_actions": 10, "max_est_tokens": 40000 }
+    },
+    {
+      "id": "rename-symbol",
+      "prompt": "把 TodoList 类重命名为 TaskList，所有引用（包括测试文件）同步更新，保证测试全部通过。",
+      "grader": "graders/rename-symbol.mjs",
+      "budgets": { "max_actions": 10, "max_est_tokens": 40000 }
+    }
+  ]
+}

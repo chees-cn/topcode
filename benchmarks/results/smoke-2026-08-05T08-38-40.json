@@ -1,0 +1,56 @@
+{
+  "label": "smoke",
+  "created": "2026-08-05T08:38:40.573Z",
+  "records": [
+    {
+      "suite": "bench-01-todo-cli",
+      "task": "fix-off-by-one",
+      "rep": 1,
+      "label": "smoke",
+      "status": "ok",
+      "elapsed_ms": 13012,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "tests-pass",
+            "pass": true
+          },
+          {
+            "name": "exports-todolist",
+            "pass": true
+          },
+          {
+            "name": "no-items-n-plus1-remnant",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 8,
+        "actions": 7,
+        "invalid_actions": 0,
+        "failed_actions": 1,
+        "bad_aborts": [],
+        "est_input_tokens": 6496,
+        "est_output_tokens": 321,
+        "injected_tokens": 298,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "8a260160467e",
+        "s3_truncated": false,
+        "elapsed_ms": 12591
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 13,
+        "total": 98
+      },
+      "workdir": "C:\\Users\\20440\\AppData\\Local\\Temp\\topcode-bench-2xa5xS"
+    }
+  ]
+}
