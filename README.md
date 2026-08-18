@@ -6,7 +6,7 @@
 >
 > 底层范式：**拓扑波前执行（Topological Wavefront Execution）** · 定位：Claude Code 的直接竞争者。
 
-**当前版本：v0.5.4** · License: MIT · 运行时：Node.js + NestJS + TypeScript
+**当前版本：v0.6.0** · License: MIT · 运行时：Node.js + NestJS + TypeScript
 
 ---
 
@@ -130,6 +130,15 @@ TopCode 的新公理：
 
 ### 安装与启动
 
+**方式一：npm 全局安装（推荐）**
+
+```bash
+npm install -g topcode
+topcode          # 首次运行进入配置向导（写入 ~/.topcode/config.json），随后进入 TUI
+```
+
+**方式二：源码运行**
+
 ```bash
 cd topcode-cli
 npm install
@@ -157,9 +166,12 @@ npm test
 ## CLI 使用
 
 ```bash
-topcode                  # 交互式 REPL（提示符 topcode>，/exit 或 /quit 退出）
+topcode                  # Ink TUI（默认；非 TTY 环境自动降级为 readline REPL）
+topcode --no-tui         # 强制传统 REPL（提示符 topcode>，/exit 或 /quit 退出）
 topcode -p "<prompt>"    # 非交互单发模式（瞬时故障优雅降级，不报废进程）
 ```
+
+TUI 按键：`Enter` 发送 · `↑/↓` 历史输入 · `Esc` 取消当轮生成 · `Ctrl+C` 生成中=取消 / 空闲=退出 · 斜杠命令 `/help` `/clear` `/exit`。
 
 环境变量：
 
@@ -203,7 +215,7 @@ REPL 内每轮动作预算上限 20 步；预算耗尽不静默烂尾 —— 回
 
 ## 配置说明
 
-Provider 配置优先级：`topcode.config.json` 的 `[provider]` 节 > 环境变量 > 默认值。
+Provider 配置优先级：`topcode.config.json` 的 `[provider]` 节 > 用户级 `~/.topcode/config.json`（首跑向导落盘） > 环境变量 > 默认值。
 
 ```jsonc
 // <工作目录>/topcode.config.json
@@ -253,7 +265,7 @@ topcode/                              # 仓库根（范式与工程文档）
 │
 ├── topcode-cli/                      # CLI 实现（NestJS）
 │   └── src/
-│       ├── main.ts                   # CLI 入口 / REPL 主循环 / 动作→断言闭环
+│       ├── main.ts                   # CLI 入口 / 三模式分发（TUI · REPL · -p）
 │       ├── app.module.ts             # 根模块
 │       ├── core/
 │       │   ├── stream-interceptor/   # M1 流式拦截状态机 + 可插拔词法表
@@ -263,7 +275,8 @@ topcode/                              # 仓库根（范式与工程文档）
 │       │   ├── lsp-bridge/           # M4 LSP 客户端（诊断回灌）
 │       │   ├── constitution/         # M7 规则加载/注入/守卫
 │       │   └── run-trace/            # 归因仪表（被动观察者）
-│       ├── agents/                   # router.agent / verify.agent
+│       ├── agents/                   # router.agent / verify.agent / agent-session（M8 事件引擎）
+│       ├── tui/                      # M8 Ink TUI（转录区 / 流式活动区 / 首跑向导）
 │       ├── providers/                # LLM Provider 适配器（OpenAI 兼容 SSE）
 │       ├── tools/                    # file-system.tool / terminal.tool
 │       └── common/
@@ -313,7 +326,8 @@ node --import tsx --test ../benchmarks/component/*.bench.ts
 |---|---|---|
 | v0.3.0 | 首发闭环：M1 拦截器 + M2 流形 + M3 投影 + M5-stub + M7 + REPL | ✅ |
 | v0.4.0 | M4 LSP + 落笔协议 L2 兜底 + M6 L3 蒸馏 + M7.3 声明式守卫 | ✅（真实 LLM 冒烟两轮全通过） |
-| v0.5.x | 评测驱动迭代体系 + E1/E2 实验（容错、中文投影） | ✅ 当前 |
+| v0.5.x | 评测驱动迭代体系 + E1/E2 实验（容错、中文投影） | ✅ |
+| v0.6.0 | M8 Ink TUI + AgentSession 事件引擎 + npm 发布封装（`npm i -g topcode`） | ✅ 当前 |
 | v1.0.0 | 二期 P2/P6：DAG 波前并行 + Docker 沙盒 + 常驻守护 | 🚧 规划 |
 | 三期 | P4 反事实搜索 + P5 技能结晶（自进化飞轮） | 🚧 规划 |
 

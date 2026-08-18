@@ -1,6 +1,7 @@
 # 依赖与构建产物
 node_modules/
 dist/
+*.tgz
 
 # 密钥与本地凭证（严禁入库 —— CLAUDE.md 硬约束）
 配置信息.txt

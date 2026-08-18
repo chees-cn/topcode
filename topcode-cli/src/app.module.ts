@@ -10,6 +10,7 @@ import { ToolsModule } from './tools/tools.module';
 import { AgentsModule } from './agents/agents.module';
 import { ProviderModule } from './providers/provider.module';
 import { RunTraceModule } from './core/run-trace/run-trace.module';
+import { TuiModule } from './tui/tui.module';
 
 @Module({
   imports: [
@@ -22,8 +23,9 @@ import { RunTraceModule } from './core/run-trace/run-trace.module';
     SandboxEngineModule,      // M5 快照逃生舱
     LspBridgeModule,          // M4 LSP 诊断回灌
     ToolsModule,              // 落笔协议执行层
-    AgentsModule,             // 路由/验证节点
+    AgentsModule,             // 路由/验证节点 + 会话回合引擎
     ProviderModule,           // 零模型绑定适配器
+    TuiModule,                // M8 Ink TUI 表现层
   ],
 })
 export class AppModule {}

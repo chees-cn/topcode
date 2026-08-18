@@ -6,7 +6,7 @@
 >
 > Underlying paradigm: **Topological Wavefront Execution** · Positioning: a direct competitor to Claude Code.
 
-**Current version: v0.5.4** · License: MIT · Runtime: Node.js + NestJS + TypeScript
+**Current version: v0.6.0** · License: MIT · Runtime: Node.js + NestJS + TypeScript
 
 ---
 
@@ -133,6 +133,15 @@ user input
 
 ### Install & Run
 
+**Option 1: npm global install (recommended)**
+
+```bash
+npm install -g topcode
+topcode          # first run launches a setup wizard (writes ~/.topcode/config.json), then the TUI
+```
+
+**Option 2: run from source**
+
 ```bash
 cd topcode-cli
 npm install
@@ -160,9 +169,12 @@ npm test
 ## CLI Usage
 
 ```bash
-topcode                  # interactive REPL (prompt: topcode>; /exit or /quit to leave)
+topcode                  # Ink TUI (default; auto-degrades to readline REPL on non-TTY)
+topcode --no-tui         # force legacy REPL (prompt: topcode>; /exit or /quit to leave)
 topcode -p "<prompt>"    # non-interactive single-shot (transient failures degrade gracefully)
 ```
+
+TUI keys: `Enter` send · `↑/↓` input history · `Esc` cancel current generation · `Ctrl+C` cancel (busy) / exit (idle) · slash commands `/help` `/clear` `/exit`.
 
 Environment variables:
 
@@ -206,7 +218,7 @@ Execution results are always compressed into assertions, e.g.:
 
 ## Configuration
 
-Provider config precedence: `[provider]` section of `topcode.config.json` > environment variables > defaults.
+Provider config precedence: `[provider]` section of `topcode.config.json` > user-level `~/.topcode/config.json` (written by the first-run wizard) > environment variables > defaults.
 
 ```jsonc
 // <working-directory>/topcode.config.json
@@ -256,7 +268,7 @@ topcode/                              # repo root (paradigm & engineering docs)
 │
 ├── topcode-cli/                      # CLI implementation (NestJS)
 │   └── src/
-│       ├── main.ts                   # CLI entry / REPL loop / action→assertion loop
+│       ├── main.ts                   # CLI entry / three-mode dispatch (TUI · REPL · -p)
 │       ├── app.module.ts             # root module
 │       ├── core/
 │       │   ├── stream-interceptor/   # M1 streaming state machine + pluggable lexicons
@@ -266,7 +278,8 @@ topcode/                              # repo root (paradigm & engineering docs)
 │       │   ├── lsp-bridge/           # M4 LSP client (diagnostic feedback)
 │       │   ├── constitution/         # M7 rule loading/injection/guards
 │       │   └── run-trace/            # attribution tracer (passive observer)
-│       ├── agents/                   # router.agent / verify.agent
+│       ├── agents/                   # router.agent / verify.agent / agent-session (M8 event engine)
+│       ├── tui/                      # M8 Ink TUI (transcript / live stream / first-run wizard)
 │       ├── providers/                # LLM provider adapter (OpenAI-compatible SSE)
 │       ├── tools/                    # file-system.tool / terminal.tool
 │       └── common/
@@ -316,7 +329,8 @@ Measured baseline evolution (33 task-runs, v0.4.0 → v0.5.2):
 |---|---|---|
 | v0.3.0 | First working loop: M1 interceptor + M2 manifold + M3 projection + M5-stub + M7 + REPL | ✅ |
 | v0.4.0 | M4 LSP + inscription L2 fallback + M6 L3 distillation + M7.3 declarative guards | ✅ (two real-LLM smoke runs passed) |
-| v0.5.x | Eval-driven iteration system + E1/E2 experiments (fault tolerance, Chinese projection) | ✅ current |
+| v0.5.x | Eval-driven iteration system + E1/E2 experiments (fault tolerance, Chinese projection) | ✅ |
+| v0.6.0 | M8 Ink TUI + AgentSession event engine + npm packaging (`npm i -g topcode`) | ✅ current |
 | v1.0.0 | Phase 2 P2/P6: DAG wavefront parallelism + Docker sandbox + resident daemon | 🚧 planned |
 | Phase 3 | P4 counterfactual search + P5 skill crystallization (self-evolution flywheel) | 🚧 planned |
 

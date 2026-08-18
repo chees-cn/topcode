@@ -1,5 +1,6 @@
 import { Injectable, Logger, Inject, Optional } from '@nestjs/common';
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
 import { ModelCategory } from '../core/stream-interceptor/lexicon';
 import { WORKDIR } from '../core/config.module';
@@ -9,11 +10,20 @@ export interface ChatMessage {
   content: string;
 }
 
-interface ProviderConfig {
+export interface ProviderConfig {
   base_url: string;          // OpenAI 兼容端点
   api_key: string;
   models: Record<string, string>;   // 类别路由: deep/quick/... → 模型名（类别路由而非模型路由）
   category: ModelCategory;          // 词法表类别
+}
+
+/** 首跑向导落盘：用户级配置（home 目录，永不入库） */
+export function saveUserConfig(provider: ProviderConfig): string {
+  const dir = path.join(os.homedir(), '.topcode');
+  fs.mkdirSync(dir, { recursive: true });
+  const file = path.join(dir, 'config.json');
+  fs.writeFileSync(file, JSON.stringify({ provider }, null, 2), { encoding: 'utf8', mode: 0o600 });
+  return file;
 }
 
 const DEFAULT_CONFIG: ProviderConfig = {
@@ -36,16 +46,33 @@ export class LlmProviderService {
   private config: ProviderConfig;
 
   constructor(@Optional() @Inject(WORKDIR) workdir?: string) {
-    this.config = this.loadConfig(workdir ?? process.cwd());
+    this.workdir = workdir ?? process.cwd();
+    this.config = this.loadConfig();
   }
 
-  private loadConfig(workdir: string): ProviderConfig {
-    try {
-      const raw = JSON.parse(fs.readFileSync(path.join(workdir, 'topcode.config.json'), 'utf8')) as { provider?: Partial<ProviderConfig> };
-      return { ...DEFAULT_CONFIG, ...raw.provider, models: { ...DEFAULT_CONFIG.models, ...raw.provider?.models } };
-    } catch {
-      return DEFAULT_CONFIG;
+  private workdir: string;
+
+  /** 配置优先级：cwd topcode.config.json > ~/.topcode/config.json（用户级） > 环境变量 > 默认 */
+  private loadConfig(): ProviderConfig {
+    const userConfigPath = path.join(os.homedir(), '.topcode', 'config.json');
+    let config = DEFAULT_CONFIG;
+    for (const file of [userConfigPath, path.join(this.workdir, 'topcode.config.json')]) {
+      try {
+        const raw = JSON.parse(fs.readFileSync(file, 'utf8')) as { provider?: Partial<ProviderConfig> };
+        config = { ...config, ...raw.provider, models: { ...config.models, ...raw.provider?.models } };
+      } catch { /* 文件缺失/损坏 → 跳过该层 */ }
     }
+    return config;
+  }
+
+  /** 首跑向导落盘后热重载，无需重启进程 */
+  reload(): void {
+    this.config = this.loadConfig();
+  }
+
+  /** 是否已配置可用密钥（首跑向导触发条件） */
+  hasApiKey(): boolean {
+    return this.config.api_key.length > 0;
   }
 
   getCategory(): ModelCategory {
