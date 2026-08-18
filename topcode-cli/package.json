@@ -1,6 +1,6 @@
 {
   "name": "topcode",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "TopCode — next-generation CLI agent framework (State-Manifold paradigm)",
   "license": "MIT",
   "type": "commonjs",
