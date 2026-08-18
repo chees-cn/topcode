@@ -1,6 +1,6 @@
 {
   "name": "topcode",
-  "version": "0.6.2",
+  "version": "0.7.0",
   "description": "TopCode — next-generation CLI agent framework (State-Manifold paradigm)",
   "license": "AGPL-3.0-only",
   "type": "commonjs",

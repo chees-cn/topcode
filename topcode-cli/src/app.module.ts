@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CoreConfigModule } from './core/config.module';
 import { StateManifoldModule } from './core/state-manifold/state-manifold.module';
+import { SessionHistoryModule } from './core/session-history/session-history.module';
 import { StreamInterceptorModule } from './core/stream-interceptor/stream-interceptor.module';
 import { ContextPrunerModule } from './core/context-pruner/context-pruner.module';
 import { ConstitutionModule } from './core/constitution/constitution.module';
@@ -17,6 +18,7 @@ import { TuiModule } from './tui/tui.module';
     CoreConfigModule,         // 全局 WORKDIR 注入令牌
     RunTraceModule,           // 评测归因仪表（被动观察者）
     StateManifoldModule,      // M2 流形存储底座
+    SessionHistoryModule,     // M9 会话存档（最近 3 条）
     StreamInterceptorModule,  // M1 流式拦截
     ContextPrunerModule,      // M3 剪枝+投影
     ConstitutionModule,       // M7 规则加载/注入

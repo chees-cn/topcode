@@ -56,11 +56,31 @@ Configuration precedence: project `topcode.config.json` > user `~/.topcode/confi
 
 | Key | Action |
 | --- | --- |
-| `Enter` | Send message |
-| `↑` / `↓` | Input history |
-| `Esc` | Cancel the current generation |
+| `Enter` | Send message / run highlighted slash command |
+| `↑` / `↓` | Input history (or navigate the slash-command menu) |
+| `Esc` | Cancel the current generation / close menu or overlay |
+| `Ctrl+P` | Session history picker (last 3 archived sessions) |
 | `Ctrl+C` | Cancel generation (busy) / exit (idle) |
-| `/help` `/clear` `/exit` | Slash commands |
+
+Typing `/` opens the slash-command menu with live filtering.
+
+### Slash commands
+
+| Command | Description |
+| --- | --- |
+| `/help` | Show all commands and keys |
+| `/new` | Archive the current session and start a new one |
+| `/clear` | Clear the transcript view |
+| `/model [name]` | Set the model (all lanes), persisted to user config |
+| `/language [en\|zh]` | Switch UI language (default English) |
+| `/status` | Show version, model, endpoint, session info |
+| `/version` | Show version |
+| `/resume` | Resume a recent session (same as `Ctrl+P`) |
+| `/export [file]` | Export the transcript to a Markdown file |
+| `/init` | Scaffold `TOPCODE.md` project memory (injected into the context projection) |
+| `/exit` `/quit` | Exit TopCode |
+
+Only the last **3** archived sessions are kept per project (`topcode-sessions.json`, git-ignored) — long-term memory lives in the state manifold, not in chat tapes.
 
 ### Available actions (model → environment)
 

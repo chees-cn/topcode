@@ -6,7 +6,7 @@
 >
 > Underlying paradigm: **Topological Wavefront Execution** · Positioning: a direct competitor to Claude Code.
 
-**Current version: v0.6.2** · License: AGPL-3.0 · Runtime: Node.js + NestJS + TypeScript
+**Current version: v0.7.0** · License: AGPL-3.0 · Runtime: Node.js + NestJS + TypeScript
 
 ---
 
@@ -174,7 +174,7 @@ topcode --no-tui         # force legacy REPL (prompt: topcode>; /exit or /quit t
 topcode -p "<prompt>"    # non-interactive single-shot (transient failures degrade gracefully)
 ```
 
-TUI keys: `Enter` send · `↑/↓` input history · `Esc` cancel current generation · `Ctrl+C` cancel (busy) / exit (idle) · slash commands `/help` `/clear` `/exit`.
+TUI keys: `Enter` send / run highlighted command · `↑/↓` input history or menu · `Esc` cancel / close overlay · `Ctrl+P` session history picker (last 3) · `Ctrl+C` cancel (busy) / exit (idle). Typing `/` opens a slash-command menu with live filtering: `/help` `/new` `/clear` `/model` `/language` `/status` `/version` `/resume` `/export` `/init` `/exit`. UI language is switchable via `/language` (English default); `/model` persists the model for all lanes; archived sessions are capped at 3 per project (long-term memory lives in the state manifold, not chat tapes).
 
 Environment variables:
 

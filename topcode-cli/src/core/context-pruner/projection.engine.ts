@@ -1,9 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, Optional } from '@nestjs/common';
+import * as fs from 'fs';
+import * as path from 'path';
 import { StateManifoldService } from '../state-manifold/state-manifold.service';
 import { Assertion, effectiveConfidence } from '../state-manifold/types';
+import { WORKDIR } from '../config.module';
 
 const CHARS_PER_TOKEN = 4;
 const T1_MAX_PER_ITEM = 40 * CHARS_PER_TOKEN; // 断言摘要每条 ≤40 token
+const PROJECT_MEMORY_MAX_CHARS = 2000;        // TOPCODE.md 注入硬上限（抗上下文熵增）
 
 /** CJK 区间（常用汉字） */
 const CJK = /[一-鿿]/;
@@ -35,7 +39,14 @@ export function latinTokens(text: string): Set<string> {
  */
 @Injectable()
 export class ProjectionEngine {
-  constructor(private readonly manifold: StateManifoldService) {}
+  private readonly workdir: string;
+
+  constructor(
+    private readonly manifold: StateManifoldService,
+    @Optional() @Inject(WORKDIR) workdir?: string,
+  ) {
+    this.workdir = workdir ?? process.cwd();
+  }
 
   /** @param taskText 当前任务文本（用户输入或 frontier 目标） */
   project(taskText: string): string {
@@ -79,12 +90,25 @@ export class ProjectionEngine {
       .map((c) => `- ⚠ ${c.assertion_id} 与观测冲突: ${c.observation}`);
 
     const sections = [
+      this.projectMemory(),
       contradictions.length ? '### Unresolved Contradictions\n' + contradictions.join('\n') : '',
       lines.length ? '### Assertions\n' + lines.join('\n') : '',
       fileLines.length ? '### Files\n' + fileLines.join('\n') : '',
     ].filter(Boolean);
 
     return sections.join('\n\n');
+  }
+
+  /** TOPCODE.md 项目记忆（/init 生成）：有界注入（≤2000 字符），置顶于投影头部 */
+  private projectMemory(): string {
+    try {
+      const raw = fs.readFileSync(path.join(this.workdir, 'TOPCODE.md'), 'utf8').trim();
+      if (!raw) return '';
+      const body = raw.length > PROJECT_MEMORY_MAX_CHARS ? raw.slice(0, PROJECT_MEMORY_MAX_CHARS) + '\n…[truncated]' : raw;
+      return '### Project Memory (TOPCODE.md)\n' + body;
+    } catch {
+      return ''; // 文件缺失 → 无项目记忆层
+    }
   }
 
   private score(a: Assertion, taskBigrams: Set<string>, taskLatin: Set<string>, seedFiles: Set<string>, now: Date): number {

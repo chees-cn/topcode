@@ -7,8 +7,10 @@ import { Command } from 'commander';
 import * as readline from 'readline';
 import { AppModule } from './app.module';
 import { StateManifoldService } from './core/state-manifold/state-manifold.service';
+import { SessionHistoryService } from './core/session-history/session-history.service';
 import { AgentSessionService, UiEvent } from './agents/agent-session.service';
-import { LlmProviderService } from './providers/llm-provider';
+import { LlmProviderService, loadUserLanguage } from './providers/llm-provider';
+import { STRINGS } from './tui/i18n';
 import { renderTui } from './tui/tui.module';
 
 // 运行时读取版本号：src/main.ts 与 dist/main.js 相对 package.json 深度一致（../package.json）
@@ -46,6 +48,7 @@ async function bootstrap(): Promise<void> {
 
   const app = await NestFactory.createApplicationContext(AppModule, { logger: ['error', 'warn'] });
   const manifold = app.get(StateManifoldService);
+  const history = app.get(SessionHistoryService);
   const session = app.get(AgentSessionService);
   const llm = app.get(LlmProviderService);
 
@@ -53,7 +56,7 @@ async function bootstrap(): Promise<void> {
     await runPlainTurn(session, opts.prompt);
   } else if (opts.tui === false || !process.stdout.isTTY || !process.stdin.isTTY) {
     // 降级路径：显式 --no-tui 或非 TTY 环境（CI/管道/mintty 异常）
-    console.log(`TopCode v${VERSION} — State-Manifold CLI agent (Ctrl+C 退出)`);
+    console.log(STRINGS[loadUserLanguage()].repl.banner(VERSION));
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout, prompt: '\ntopcode> ' });
     rl.prompt();
     for await (const line of rl) {
@@ -66,11 +69,12 @@ async function bootstrap(): Promise<void> {
     rl.close();
   } else {
     // 默认路径：Ink TUI（含首跑配置向导）
-    const tui = renderTui({ session, llm, version: VERSION });
+    const tui = renderTui({ session, llm, history, version: VERSION });
     await tui.waitUntilExit();
   }
 
   manifold.flush();
+  history.flush();
   await app.close();
 }
 

@@ -6,7 +6,7 @@
 >
 > 底层范式：**拓扑波前执行（Topological Wavefront Execution）** · 定位：Claude Code 的直接竞争者。
 
-**当前版本：v0.6.2** · License: AGPL-3.0 · 运行时：Node.js + NestJS + TypeScript
+**当前版本：v0.7.0** · License: AGPL-3.0 · 运行时：Node.js + NestJS + TypeScript
 
 ---
 
@@ -171,7 +171,7 @@ topcode --no-tui         # 强制传统 REPL（提示符 topcode>，/exit 或 /q
 topcode -p "<prompt>"    # 非交互单发模式（瞬时故障优雅降级，不报废进程）
 ```
 
-TUI 按键：`Enter` 发送 · `↑/↓` 历史输入 · `Esc` 取消当轮生成 · `Ctrl+C` 生成中=取消 / 空闲=退出 · 斜杠命令 `/help` `/clear` `/exit`。
+TUI 按键：`Enter` 发送 / 执行高亮命令 · `↑/↓` 历史输入或菜单导航 · `Esc` 取消当轮 / 关闭浮层 · `Ctrl+P` 会话历史选择器（最近 3 条）· `Ctrl+C` 生成中=取消 / 空闲=退出。输入 `/` 弹出斜杠命令菜单（实时过滤）：`/help` `/new` `/clear` `/model` `/language` `/status` `/version` `/resume` `/export` `/init` `/exit`。界面语言经 `/language` 切换（默认英文）；`/model` 持久化全部通道模型；归档会话每项目硬上限 3 条（长期记忆在状态流形，而非对话磁带）。
 
 环境变量：
 

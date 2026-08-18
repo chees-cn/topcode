@@ -17,13 +17,52 @@ export interface ProviderConfig {
   category: ModelCategory;          // 词法表类别
 }
 
-/** 首跑向导落盘：用户级配置（home 目录，永不入库） */
-export function saveUserConfig(provider: ProviderConfig): string {
+/** UI 语言：默认英文（用户宪法裁决） */
+export type Locale = 'en' | 'zh';
+
+function userConfigPath(): string {
+  return path.join(os.homedir(), '.topcode', 'config.json');
+}
+
+/** 读取用户级配置原始对象（容忍缺失/损坏 → 空对象） */
+function readUserConfigRaw(): Record<string, unknown> {
+  try {
+    return JSON.parse(fs.readFileSync(userConfigPath(), 'utf8')) as Record<string, unknown>;
+  } catch {
+    return {};
+  }
+}
+
+function writeUserConfigRaw(raw: Record<string, unknown>): string {
   const dir = path.join(os.homedir(), '.topcode');
   fs.mkdirSync(dir, { recursive: true });
-  const file = path.join(dir, 'config.json');
-  fs.writeFileSync(file, JSON.stringify({ provider }, null, 2), { encoding: 'utf8', mode: 0o600 });
+  const file = userConfigPath();
+  fs.writeFileSync(file, JSON.stringify(raw, null, 2), { encoding: 'utf8', mode: 0o600 });
   return file;
+}
+
+/** 首跑向导落盘：用户级配置（home 目录，永不入库）。合并写，保留 language 等同级键 */
+export function saveUserConfig(provider: ProviderConfig): string {
+  return writeUserConfigRaw({ ...readUserConfigRaw(), provider });
+}
+
+/** /language 持久化 */
+export function loadUserLanguage(): Locale {
+  return readUserConfigRaw().language === 'zh' ? 'zh' : 'en';
+}
+
+export function saveUserLanguage(locale: Locale): string {
+  return writeUserConfigRaw({ ...readUserConfigRaw(), language: locale });
+}
+
+/** /model 持久化：全部 lane 统一写入新模型名（对齐首跑向导 deep/quick 共用行为） */
+export function saveUserModel(model: string): string {
+  const raw = readUserConfigRaw();
+  const provider = (raw.provider ?? {}) as Partial<ProviderConfig>;
+  const lanes = Object.keys(provider.models ?? {});
+  const models: Record<string, string> = {};
+  for (const lane of lanes.length ? lanes : ['deep', 'quick']) models[lane] = model;
+  return writeUserConfigRaw({ ...raw, provider: { ...provider, models } });
 }
 
 const DEFAULT_CONFIG: ProviderConfig = {

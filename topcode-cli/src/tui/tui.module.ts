@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import type { AgentSessionService } from '../agents/agent-session.service';
 import type { LlmProviderService } from '../providers/llm-provider';
+import type { SessionHistoryService } from '../core/session-history/session-history.service';
 
 /**
  * TUI 表现层模块 —— 无 provider：Ink 应用经 renderTui 闭包获取服务实例，
@@ -12,6 +13,7 @@ export class TuiModule {}
 export interface TuiDeps {
   session: AgentSessionService;
   llm: LlmProviderService;
+  history: SessionHistoryService;
   version: string;
 }
 
