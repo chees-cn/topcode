@@ -81,4 +81,4 @@ High-risk modifications are snapshot-protected (git-based rollback), and action 
 
 ## License
 
-MIT
+[AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.html)

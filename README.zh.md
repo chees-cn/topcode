@@ -6,7 +6,7 @@
 >
 > 底层范式：**拓扑波前执行（Topological Wavefront Execution）** · 定位：Claude Code 的直接竞争者。
 
-**当前版本：v0.6.0** · License: MIT · 运行时：Node.js + NestJS + TypeScript
+**当前版本：v0.6.2** · License: AGPL-3.0 · 运行时：Node.js + NestJS + TypeScript
 
 ---
 
