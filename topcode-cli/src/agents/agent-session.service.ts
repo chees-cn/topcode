@@ -9,6 +9,7 @@ import { KERNEL_PROMPT } from '../common/prompts/kernel.prompt';
 import { RouterAgent } from './router.agent';
 
 const MAX_ACTIONS_PER_TURN = 20; // 防动作死循环（E3：8→20，实测 8 普遍烂尾）
+const MAX_MALFORMED_RETRIES = 2; // 畸形/截断动作块的自愈重发上限（v0.7.1，防无限重发）
 
 /** UI 无关的会话事件流：TUI / 纯文本 / REPL 三种前端共享同一事件源（P6） */
 export type UiEvent =
@@ -33,6 +34,7 @@ interface GenResult {
 @Injectable()
 export class AgentSessionService {
   private currentAbort: AbortController | null = null;
+  private userCancel = false; // 区分用户 Esc 与拦截器协议 abort（v0.7.1：畸形不再误标 cancelled）
 
   constructor(
     private readonly injector: ConstitutionInjector,
@@ -44,6 +46,7 @@ export class AgentSessionService {
 
   /** 中断当轮生成；无进行中的回合时为空操作 */
   cancel(): void {
+    this.userCancel = true;
     this.currentAbort?.abort();
   }
 
@@ -76,6 +79,8 @@ export class AgentSessionService {
 
     let cancelled = false;
     let steps = 0;
+    let malformedRetries = 0;
+    this.userCancel = false; // 回合开始时复位，cancelled 只反映本轮用户意图
 
     // 单轮内动作循环：动作 → 断言 → 回注 → 续写，直到无动作或达上限
     let exhausted = true;
@@ -88,9 +93,10 @@ export class AgentSessionService {
         next = await gen.next();
       }
       const { actionEv, abortEv, assistantText, aborted } = next.value;
-      if (aborted && !actionEv) cancelled = true;
+      if (aborted && !actionEv && this.userCancel) cancelled = true;
 
       if (actionEv && actionEv.type === 'action') {
+        malformedRetries = 0; // 动作成功落地 → 自愈计数清零
         const assertionText = await this.router.dispatch(actionEv.data);
         this.tracer.record({ type: 'action', step, raw: actionEv.data, assertion: assertionText });
         yield { type: 'assertion', text: assertionText };
@@ -100,6 +106,16 @@ export class AgentSessionService {
       }
       if (abortEv && abortEv.type === 'abort' && abortEv.reason !== 'closed') {
         yield { type: 'abort', reason: abortEv.reason, detail: abortEv.detail };
+        // 自愈路径（v0.7.1）：畸形 JSON / 流截断不再整轮烂尾——回注重发断言，给模型修复机会
+        if (!cancelled && abortEv.reason === 'malformed' && malformedRetries < MAX_MALFORMED_RETRIES) {
+          malformedRetries++;
+          const retryText = `[SYSTEM ASSERTION]: 上一个动作块无法解析（${abortEv.detail}）。请重新完整输出该动作块：不要省略内容、不要截断、确保围栏闭合。`;
+          this.tracer.record({ type: 'malformed_retry', step, detail: abortEv.detail, attempt: malformedRetries });
+          yield { type: 'assertion', text: retryText };
+          messages.push({ role: 'assistant', content: assistantText });
+          messages.push({ role: 'user', content: retryText });
+          continue;
+        }
       }
       exhausted = false;
       break; // 无动作 → 本轮结束

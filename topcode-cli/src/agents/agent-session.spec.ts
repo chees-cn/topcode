@@ -80,3 +80,44 @@ test('cancel：中断当轮生成 → done(cancelled=true)，后续事件流正�
   const texts = events.filter((e) => e.type === 'text');
   assert.ok(texts.length < 5); // 未消费完全部增量
 });
+
+test('畸形自愈：流截断（未闭合 JSON）→ 回注重发断言 → 下一轮动作正常落地，不误标 cancelled', async () => {
+  let call = 0;
+  let dispatched: unknown = null;
+  const session = makeSession(
+    async function* () {
+      call++;
+      if (call === 1) {
+        // 模拟中段干净截断：JSON 块未闭合，流直接结束（finalize → malformed）
+        yield 'let me read\n```json\n{"action":"read_file","target":"a.ts"';
+      } else if (call === 2) {
+        yield '```json\n{"action":"read_file","target":"a.ts","payload":{}}\n```\n';
+      } else {
+        yield 'done reading';
+      }
+    },
+    async (raw) => { dispatched = raw; return '[SYSTEM ASSERTION]: read ok'; },
+  );
+  const events = await collect(session.runTurn('read a.ts'));
+  const abort = events.find((e) => e.type === 'abort');
+  assert.ok(abort && (abort as { reason: string }).reason === 'malformed');
+  const retry = events.find((e) => e.type === 'assertion' && (e as { text: string }).text.includes('无法解析'));
+  assert.ok(retry, '应回注重发断言');
+  assert.deepEqual(dispatched, { action: 'read_file', target: 'a.ts', payload: {} });
+  const done = events.at(-1);
+  assert.ok(done && done.type === 'done' && done.cancelled === false, '协议故障不得误标为用户取消');
+});
+
+test('畸形自愈熔断：连续畸形超过上限 → 终止本轮，但 cancelled 仍为 false', async () => {
+  let call = 0;
+  const session = makeSession(async function* () {
+    call++;
+    yield '```json\n{"action":"read_file","target":'; // 永远截断
+  });
+  const events = await collect(session.runTurn('broken'));
+  assert.equal(call, 3); // 首发 + 2 次自愈重发，然后熔断
+  const retries = events.filter((e) => e.type === 'assertion' && (e as { text: string }).text.includes('无法解析'));
+  assert.equal(retries.length, 2);
+  const done = events.at(-1);
+  assert.ok(done && done.type === 'done' && done.cancelled === false);
+});

@@ -74,6 +74,7 @@ const DEFAULT_CONFIG: ProviderConfig = {
 
 const RETRYABLE_STATUS = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
 const MAX_RETRIES = 2; // 瞬时错误最多重试 2 次（指数退避 1s/2s）
+const MAX_STREAM_RESUMES = 2; // 流式中段断裂续传上限（长程任务链容错，v0.7.1）
 
 /**
  * LLM Provider 适配器 —— 零模型绑定：任何 OpenAI 兼容端点（含本地 vLLM/Ollama）
@@ -155,29 +156,48 @@ export class LlmProviderService {
     throw lastErr ?? new Error('LLM request failed');
   }
 
-  /** SSE 流式对话；signal 用于拦截器三档 abort 强行终止生成 */
+  /** SSE 流式对话；signal 用于拦截器三档 abort 强行终止生成。中段断裂以已流出内容为 assistant 前缀续传重连 */
   async *chat(messages: ChatMessage[], opts: { lane?: string; signal?: AbortSignal } = {}): AsyncGenerator<string> {
     const model = this.config.models[opts.lane ?? 'deep'] ?? Object.values(this.config.models)[0];
-    const body = await this.connect(model, messages, opts.signal ?? null);
+    let attemptMessages = messages;
+    let resumes = 0;
+    let emitted = ''; // 跨续传累计的已流出内容（续传前缀的事实源）
 
-    const reader = body.getReader();
-    const decoder = new TextDecoder();
-    let buf = '';
     for (;;) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buf += decoder.decode(value, { stream: true });
-      const lines = buf.split('\n');
-      buf = lines.pop() ?? '';
-      for (const line of lines) {
-        const t = line.trim();
-        if (!t.startsWith('data:')) continue;
-        const data = t.slice(5).trim();
-        if (data === '[DONE]') return;
-        try {
-          const delta = (JSON.parse(data) as { choices?: Array<{ delta?: { content?: string } }> }).choices?.[0]?.delta?.content;
-          if (delta) yield delta;
-        } catch { /* 容忍半行 SSE */ }
+      const body = await this.connect(model, attemptMessages, opts.signal ?? null);
+      const reader = body.getReader();
+      const decoder = new TextDecoder();
+      let buf = '';
+      try {
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buf += decoder.decode(value, { stream: true });
+          const lines = buf.split('\n');
+          buf = lines.pop() ?? '';
+          for (const line of lines) {
+            const t = line.trim();
+            if (!t.startsWith('data:')) continue;
+            const data = t.slice(5).trim();
+            if (data === '[DONE]') return;
+            try {
+              const delta = (JSON.parse(data) as { choices?: Array<{ delta?: { content?: string } }> }).choices?.[0]?.delta?.content;
+              if (delta) { emitted += delta; yield delta; }
+            } catch { /* 容忍半行 SSE */ }
+          }
+        }
+        return; // 流正常结束
+      } catch (e) {
+        // 拦截器/用户 abort：静默收尾，是否续传由调用方按 signal 判定（原语义不变）
+        if (opts.signal?.aborted) return;
+        // 中段断裂自愈：已累计流出内容作为 assistant 前缀续传，yield 序列无缝衔接；
+        // emitted 为空说明首字节前就失败——connect() 的重试已兜过底，直接上抛
+        if (!emitted || resumes >= MAX_STREAM_RESUMES) throw e;
+        resumes++;
+        const backoffMs = 1000 * resumes;
+        this.logger.warn(`LLM stream broke mid-flight (${(e as Error).message}), resume ${resumes}/${MAX_STREAM_RESUMES} in ${backoffMs}ms`);
+        await new Promise((r) => setTimeout(r, backoffMs));
+        attemptMessages = [...messages, { role: 'assistant', content: emitted }];
       }
     }
   }
