@@ -305,9 +305,11 @@ export function App({ session, llm, history, modes, version }: AppProps): JSX.El
   const desc = llm.describe();
   const modeColor = mode === 'plan' ? 'yellow' : mode === 'auto' ? 'magenta' : 'gray';
 
+  // width="100%"：ink 根节点每次渲染（含 resize 重渲染）都会 setWidth(终端列数)，
+  // 根 Box 必须显式声明占满父宽，否则 Yoga 按内容收缩，布局不随窗口自适应。
   return (
-    <Box flexDirection="column">
-      <Box borderStyle="round" borderColor="cyan" paddingX={1} justifyContent="space-between">
+    <Box flexDirection="column" width="100%">
+      <Box borderStyle="round" borderColor="cyan" paddingX={1} justifyContent="space-between" width="100%">
         <Text bold color="cyan">{`TopCode v${version}`}</Text>
         <Text dimColor>{`${desc.category} · ${currentModel()} · ${process.cwd()}`}</Text>
         <Text bold color={modeColor}>{`[${s.modes[mode]}]`}</Text>
@@ -378,7 +380,7 @@ export function App({ session, llm, history, modes, version }: AppProps): JSX.El
         />
       )}
       {!overlay && menuVisible && (
-        <Box flexDirection="column" borderStyle="round" borderColor="gray" paddingX={1}>
+        <Box flexDirection="column" borderStyle="round" borderColor="gray" paddingX={1} width="100%">
           {menuMatches.map((c, i) => (
             <Box key={c.name}>
               <Text color={i === menuIdx ? 'green' : undefined} bold={i === menuIdx}>

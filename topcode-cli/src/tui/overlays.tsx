@@ -29,7 +29,7 @@ export function SelectList({ title, items, onSelect, onCancel }: {
   });
 
   return (
-    <Box flexDirection="column" borderStyle="round" borderColor="cyan" paddingX={1}>
+    <Box flexDirection="column" borderStyle="round" borderColor="cyan" paddingX={1} width="100%">
       <Text bold color="cyan">{title}</Text>
       {items.map((it, i) => (
         <Box key={it.value}>
@@ -57,7 +57,7 @@ export function TextPrompt({ title, hint, onSubmit, onCancel }: {
   });
 
   return (
-    <Box flexDirection="column" borderStyle="round" borderColor="cyan" paddingX={1}>
+    <Box flexDirection="column" borderStyle="round" borderColor="cyan" paddingX={1} width="100%">
       <Text bold color="cyan">{title}</Text>
       {hint ? <Text dimColor>{hint}</Text> : null}
       <Box>

@@ -33,7 +33,7 @@ export function SetupWizard({ s, onDone }: { s: Strings; onDone: () => void }): 
 
   if (savedTo) {
     return (
-      <Box flexDirection="column" padding={1}>
+      <Box flexDirection="column" padding={1} width="100%">
         <Text color="green">{s.wizard.savedTo(savedTo)}</Text>
         <Text dimColor>{s.wizard.pressEnter}</Text>
         <TextInput value="" onChange={() => undefined} onSubmit={onDone} />
@@ -62,7 +62,7 @@ export function SetupWizard({ s, onDone }: { s: Strings; onDone: () => void }): 
   };
 
   return (
-    <Box flexDirection="column" padding={1}>
+    <Box flexDirection="column" padding={1} width="100%">
       <Text bold color="cyan">{s.wizard.title}</Text>
       <Text dimColor>{s.wizard.noKey}</Text>
       <Text dimColor>{s.wizard.saveLoc}</Text>
