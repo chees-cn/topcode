@@ -7,7 +7,7 @@ import { Locale } from '../providers/llm-provider';
  */
 const en = {
   footer: {
-    idle: 'Enter to send · /help for commands · Ctrl+C to exit',
+    idle: 'Enter to send · Tab to switch mode · /help for commands · Ctrl+C to exit',
     busy: (steps: number) => `generating · actions ${steps} · Esc to cancel`,
     inputPlaceholderBusy: 'generating… (Esc to cancel)',
   },
@@ -16,14 +16,20 @@ const en = {
     keysTitle: 'Keys:',
     keys: [
       '  Enter   Send / run command      ↑/↓  Input history / menu',
-      '  Esc     Cancel turn / close     Ctrl+P  Session history (last 3)',
-      '  Ctrl+C  Busy = cancel turn, idle = exit',
+      '  Tab     Switch mode            Esc   Cancel turn / close',
+      '  Ctrl+P  Session history        Ctrl+C  Busy = cancel, idle = exit',
     ],
+  },
+  modes: {
+    normal: 'NORMAL',
+    plan: 'PLAN',
+    auto: 'AUTO',
   },
   commands: {
     help: 'Show this help',
     new: 'Archive current session and start a new one',
     clear: 'Clear the transcript view',
+    mode: 'Switch execution mode (normal/plan/auto, same as Tab)',
     model: 'Set the model (all lanes)',
     language: 'Switch UI language (en/zh)',
     status: 'Show version, model, endpoint, session info',
@@ -46,6 +52,14 @@ const en = {
     initCreated: (p: string) => `Created ${p}. Its content joins the context projection on every turn (≤2000 chars).`,
     initExists: (p: string) => `${p} already exists — left untouched.`,
     modelUnchanged: 'Model name unchanged (empty input).',
+    modeSet: (m: string) => `Mode switched to ${m}. Tab cycles: normal → plan → auto.`,
+  },
+  plan: {
+    title: 'PLAN MODE — review the plan (↑/↓ move, Enter confirm, Esc cancel turn)',
+    approve: 'Approve & execute',
+    reject: 'Reject with feedback',
+    feedbackTitle: 'Plan rejected — feedback for revision',
+    feedbackHint: 'Describe what to change; empty = generic rejection. Esc cancels the turn.',
   },
   overlay: {
     languageTitle: 'Select language (↑/↓ move, Enter confirm, Esc cancel)',
@@ -58,6 +72,7 @@ const en = {
     labels: {
       version: 'version',
       language: 'language',
+      mode: 'mode',
       category: 'category',
       models: 'models',
       baseUrl: 'base_url',
@@ -101,7 +116,7 @@ const en = {
 
 const zh: typeof en = {
   footer: {
-    idle: 'Enter 发送 · /help 帮助 · Ctrl+C 退出',
+    idle: 'Enter 发送 · Tab 切换模式 · /help 帮助 · Ctrl+C 退出',
     busy: (steps: number) => `生成中 · 已执行动作 ${steps} · Esc 取消`,
     inputPlaceholderBusy: '生成中…（Esc 取消）',
   },
@@ -110,14 +125,20 @@ const zh: typeof en = {
     keysTitle: '按键:',
     keys: [
       '  Enter   发送 / 执行命令        ↑/↓  历史输入 / 菜单',
-      '  Esc     取消当轮 / 关闭浮层     Ctrl+P  会话历史（最近 3 条）',
-      '  Ctrl+C  生成中=取消，空闲=退出',
+      '  Tab     切换模式              Esc   取消当轮 / 关闭浮层',
+      '  Ctrl+P  会话历史              Ctrl+C  生成中=取消，空闲=退出',
     ],
+  },
+  modes: {
+    normal: '普通',
+    plan: '规划',
+    auto: '自动',
   },
   commands: {
     help: '显示本帮助',
     new: '归档当前会话并开始新会话',
     clear: '清空转录区显示',
+    mode: '切换执行模式（normal/plan/auto，等同 Tab）',
     model: '设置模型（全部通道）',
     language: '切换界面语言（en/zh）',
     status: '显示版本、模型、端点、会话信息',
@@ -140,6 +161,14 @@ const zh: typeof en = {
     initCreated: (p: string) => `已创建 ${p}，其内容将在每回合注入上下文投影（≤2000 字符）。`,
     initExists: (p: string) => `${p} 已存在，未做改动。`,
     modelUnchanged: '模型名未变更（空输入）。',
+    modeSet: (m: string) => `模式已切换为 ${m}。Tab 循环：普通 → 规划 → 自动。`,
+  },
+  plan: {
+    title: '规划模式 —— 审查计划（↑/↓ 移动，Enter 确认，Esc 取消当轮）',
+    approve: '批准并执行',
+    reject: '拒绝并附反馈',
+    feedbackTitle: '计划已拒绝 —— 请输入修订反馈',
+    feedbackHint: '说明需要修改的内容；留空 = 笼统拒绝。Esc 取消当轮。',
   },
   overlay: {
     languageTitle: '选择语言（↑/↓ 移动，Enter 确认，Esc 取消）',
@@ -152,6 +181,7 @@ const zh: typeof en = {
     labels: {
       version: '版本',
       language: '语言',
+      mode: '模式',
       category: '协议类别',
       models: '模型',
       baseUrl: '端点',

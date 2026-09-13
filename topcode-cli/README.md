@@ -50,13 +50,23 @@ Configuration precedence: project `topcode.config.json` > user `~/.topcode/confi
 | --- | --- |
 | `topcode` | Launch the interactive TUI |
 | `topcode -p "fix the failing test"` | Non-interactive single prompt (CI / pipes) |
+| `topcode -p "..." --mode plan` | Headless plan mode (gate auto-approves, plan printed) |
 | `topcode --no-tui` | Legacy line-based REPL |
+
+### Execution postures (cycle with `Tab` or `/mode`)
+
+| Mode | Behavior |
+| --- | --- |
+| `normal` | Direct execution (default) |
+| `plan` | Forced read-only research → structured plan → engine-level confirmation gate (writes physically blocked until approved) → approved plan executes in the same turn |
+| `auto` | Brief plan preamble, then fully autonomous execution — no confirmation interrupts |
 
 ### TUI keys
 
 | Key | Action |
 | --- | --- |
 | `Enter` | Send message / run highlighted slash command |
+| `Tab` | Cycle execution mode (normal → plan → auto) |
 | `↑` / `↓` | Input history (or navigate the slash-command menu) |
 | `Esc` | Cancel the current generation / close menu or overlay |
 | `Ctrl+P` | Session history picker (last 3 archived sessions) |
@@ -71,6 +81,7 @@ Typing `/` opens the slash-command menu with live filtering.
 | `/help` | Show all commands and keys |
 | `/new` | Archive the current session and start a new one |
 | `/clear` | Clear the transcript view |
+| `/mode [normal\|plan\|auto]` | Switch execution posture (same as `Tab`) |
 | `/model [name]` | Set the model (all lanes), persisted to user config |
 | `/language [en\|zh]` | Switch UI language (default English) |
 | `/status` | Show version, model, endpoint, session info |
@@ -84,7 +95,7 @@ Only the last **3** archived sessions are kept per project (`topcode-sessions.js
 
 ### Available actions (model → environment)
 
-`read_file` · `modify_file` · `run_terminal` · `query_ast_graph`
+`read_file` · `modify_file` · `run_terminal` · `query_ast_graph` · `submit_plan` (plan mode only)
 
 High-risk modifications are snapshot-protected (git-based rollback), and action results are compressed into state assertions instead of raw stack traces.
 

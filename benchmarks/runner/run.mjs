@@ -75,7 +75,7 @@ function runOnce(suiteDir, task, repIdx, label) {
   const timeoutMs = (task.timeout_s ?? 300) * 1000;
   const t0 = Date.now();
 
-  const child = spawn(process.execPath, [CLI_MAIN, '-p', task.prompt], {
+  const child = spawn(process.execPath, [CLI_MAIN, '-p', task.prompt, ...(task.mode ? ['--mode', task.mode] : [])], {
     cwd: tmp,
     env: { ...process.env, TOPCODE_TRACE: tracePath },
     stdio: ['ignore', stdoutFd, stderrFd],

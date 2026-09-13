@@ -16,7 +16,7 @@ CRITICAL RULES:
 \`\`\`
 2. The system will intercept this block, execute it, and return a compressed [SYSTEM ASSERTION] of the state change.
 3. DO NOT apologize. DO NOT explain your thought process unless explicitly asked. Your goal is structural correctness.
-4. Available Actions: ['read_file', 'modify_file', 'run_terminal', 'query_ast_graph'].
+4. Available Actions: ['read_file', 'modify_file', 'run_terminal', 'query_ast_graph']. In PLAN MODE an additional action 'submit_plan' is available (payload: { "plan": "<markdown>", "steps": [...] }); it is rejected in other modes.
 5. For modify_file, prefer hash-anchored search/replace edits:
    payload.edits = [{ "anchor": "L<line>#<hash>", "search": "<exact original>", "replace": "<new content>" }]
    Use payload.full_content only for new files or when edits have failed repeatedly.`;

@@ -1,0 +1,127 @@
+{
+  "label": "m10-modes-v3",
+  "created": "2026-09-13T10:34:28.113Z",
+  "records": [
+    {
+      "suite": "bench-04-modes",
+      "task": "plan-gate-execute",
+      "rep": 1,
+      "label": "m10-modes-v3",
+      "status": "ok",
+      "elapsed_ms": 17257,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "divide-implemented",
+            "pass": true
+          },
+          {
+            "name": "divide-behavior",
+            "pass": true
+          },
+          {
+            "name": "tests-pass",
+            "pass": true
+          },
+          {
+            "name": "plan-gate-fired",
+            "pass": true
+          },
+          {
+            "name": "plan-gate-approved",
+            "pass": true
+          },
+          {
+            "name": "research-before-plan",
+            "pass": true
+          },
+          {
+            "name": "no-unblocked-write-before-gate",
+            "pass": true,
+            "detail": "no early writes"
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 12,
+        "actions": 10,
+        "invalid_actions": 0,
+        "failed_actions": 4,
+        "bad_aborts": [],
+        "est_input_tokens": 17137,
+        "est_output_tokens": 877,
+        "injected_tokens": 519,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "d137d8d35563",
+        "s3_truncated": false,
+        "elapsed_ms": 16876
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 7,
+        "total": 92
+      },
+      "workdir": "C:\\Users\\20440\\AppData\\Local\\Temp\\topcode-bench-g7ogF6"
+    },
+    {
+      "suite": "bench-04-modes",
+      "task": "auto-execute",
+      "rep": 1,
+      "label": "m10-modes-v3",
+      "status": "ok",
+      "elapsed_ms": 17195,
+      "grader": {
+        "score": 1,
+        "checks": [
+          {
+            "name": "divide-implemented",
+            "pass": true
+          },
+          {
+            "name": "divide-behavior",
+            "pass": true
+          },
+          {
+            "name": "tests-pass",
+            "pass": true
+          },
+          {
+            "name": "no-plan-gate-in-auto",
+            "pass": true
+          }
+        ]
+      },
+      "metrics": {
+        "steps": 11,
+        "actions": 10,
+        "invalid_actions": 0,
+        "failed_actions": 3,
+        "bad_aborts": [],
+        "est_input_tokens": 13794,
+        "est_output_tokens": 1241,
+        "injected_tokens": 410,
+        "projection_tokens": 0,
+        "crit_total": 0,
+        "crit_hit": 0,
+        "crit_hit_ids": [],
+        "config_hash": "d137d8d35563",
+        "s3_truncated": false,
+        "elapsed_ms": 16817
+      },
+      "score": {
+        "success": 50,
+        "efficiency": 20,
+        "context": 15,
+        "protocol": 9,
+        "total": 94
+      },
+      "workdir": "C:\\Users\\20440\\AppData\\Local\\Temp\\topcode-bench-2W0ZLg"
+    }
+  ]
+}

@@ -7,6 +7,7 @@ import { ContextPrunerService } from '../core/context-pruner/context-pruner.serv
 import { StateManifoldService } from '../core/state-manifold/state-manifold.service';
 import { ConstitutionGuard } from '../core/constitution/constitution.guard';
 import { VerifyAgent } from './verify.agent';
+import { AgentModeService, isReadonlyCommand } from './agent-mode.service';
 
 /** L1 连续失败上限：达到即建议 L2 全量重写（Cline 死循环教训，ADR-001） */
 const MAX_L1_FAILURES = 3;
@@ -27,6 +28,7 @@ export class RouterAgent {
     private readonly manifold: StateManifoldService,
     private readonly guard: ConstitutionGuard,
     private readonly verify: VerifyAgent,
+    private readonly modes: AgentModeService,
   ) {}
 
   /** 执行拦截到的动作，返回压缩后的 [SYSTEM ASSERTION] 文本 */
@@ -50,6 +52,11 @@ export class RouterAgent {
         break;
       }
       case 'modify_file': {
+        // M10 plan 模式硬封锁：确认门未过，写操作在路由层物理拒绝（不依赖模型自觉）
+        if (this.modes.isWriteLocked()) {
+          result = { ok: false, summary: 'PLAN MODE: 计划未获用户批准，modify_file 被引擎封锁。请继续只读调研，或用 submit_plan 提交计划。' };
+          break;
+        }
         const verdict = this.guard.checkWrite(env.target); // M7.3 权限硬拦截
         result = verdict.allowed
           ? await this.handleModify(env)
@@ -60,10 +67,20 @@ export class RouterAgent {
         const command = typeof env.payload.command === 'string'
           ? env.payload.command
           : String(env.payload.cmd ?? '');
+        if (this.modes.isWriteLocked() && !isReadonlyCommand(command)) {
+          result = { ok: false, summary: `PLAN MODE: 仅允许只读命令（ls/cat/grep/rg/git status|log|diff 等），已封锁: ${command.slice(0, 80)}` };
+          break;
+        }
         const verdict = this.guard.checkCommand(command);
         result = verdict.allowed
           ? await this.terminal.run(command)
           : { ok: false, summary: verdict.reason ?? 'command denied' };
+        break;
+      }
+      case 'submit_plan': {
+        // 兜底分支：plan 模式下由会话引擎在确认门拦截，不会走到这里；
+        // normal/auto 模式模型误用时给出明确纠正断言。
+        result = { ok: false, summary: 'submit_plan 仅在 PLAN MODE 可用（Tab 切换）。当前模式下请直接执行任务。' };
         break;
       }
       case 'query_ast_graph': {

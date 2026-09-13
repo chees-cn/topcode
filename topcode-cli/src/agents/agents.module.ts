@@ -9,10 +9,11 @@ import { ProviderModule } from '../providers/provider.module';
 import { RouterAgent } from './router.agent';
 import { VerifyAgent } from './verify.agent';
 import { AgentSessionService } from './agent-session.service';
+import { AgentModeService } from './agent-mode.service';
 
 @Module({
   imports: [ToolsModule, SandboxEngineModule, ContextPrunerModule, StateManifoldModule, ConstitutionModule, LspBridgeModule, ProviderModule],
-  providers: [RouterAgent, VerifyAgent, AgentSessionService],
-  exports: [RouterAgent, VerifyAgent, AgentSessionService],
+  providers: [RouterAgent, VerifyAgent, AgentSessionService, AgentModeService],
+  exports: [RouterAgent, VerifyAgent, AgentSessionService, AgentModeService],
 })
 export class AgentsModule {}

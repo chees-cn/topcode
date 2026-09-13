@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { Locale } from '../providers/llm-provider';
+import { AgentMode } from '../agents/agent-mode.service';
 import { Strings } from './i18n';
 
 /**
@@ -26,6 +27,10 @@ export interface CommandContext {
   exportTranscript: (file?: string) => string | null;
   /** /status 数据 */
   statusText: () => string;
+  /** M10 执行姿态：读取/切换模式（Tab 与 /mode 共用同一状态源） */
+  getMode: () => AgentMode;
+  cycleMode: () => AgentMode;
+  setMode: (mode: AgentMode) => void;
   version: string;
 }
 
@@ -51,6 +56,14 @@ export const COMMANDS: SlashCommand[] = [
   { name: 'help', descKey: 'help', run: (ctx) => ctx.pushItem('system', buildHelp(ctx.s)) },
   { name: 'new', descKey: 'new', run: (ctx) => ctx.newSession() },
   { name: 'clear', descKey: 'clear', run: (ctx) => ctx.clearTranscript() },
+  {
+    name: 'mode', usage: '[normal|plan|auto]', descKey: 'mode',
+    run: (ctx, arg) => {
+      const next = (arg === 'normal' || arg === 'plan' || arg === 'auto') ? arg : ctx.cycleMode();
+      if (arg === 'normal' || arg === 'plan' || arg === 'auto') ctx.setMode(next);
+      ctx.pushItem('notice', ctx.s.notices.modeSet(ctx.s.modes[next]));
+    },
+  },
   {
     name: 'model', usage: '[name]', descKey: 'model',
     run: (ctx, arg) => (arg ? ctx.applyModel(arg) : ctx.openOverlay('model')),

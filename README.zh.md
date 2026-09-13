@@ -169,9 +169,20 @@ npm test
 topcode                  # Ink TUI（默认；非 TTY 环境自动降级为 readline REPL）
 topcode --no-tui         # 强制传统 REPL（提示符 topcode>，/exit 或 /quit 退出）
 topcode -p "<prompt>"    # 非交互单发模式（瞬时故障优雅降级，不报废进程）
+topcode -p "<prompt>" --mode plan   # headless 规划模式（确认门自动批准并打印计划）
 ```
 
-TUI 按键：`Enter` 发送 / 执行高亮命令 · `↑/↓` 历史输入或菜单导航 · `Esc` 取消当轮 / 关闭浮层 · `Ctrl+P` 会话历史选择器（最近 3 条）· `Ctrl+C` 生成中=取消 / 空闲=退出。输入 `/` 弹出斜杠命令菜单（实时过滤）：`/help` `/new` `/clear` `/model` `/language` `/status` `/version` `/resume` `/export` `/init` `/exit`。界面语言经 `/language` 切换（默认英文）；`/model` 持久化全部通道模型；归档会话每项目硬上限 3 条（长期记忆在状态流形，而非对话磁带）。
+执行姿态（M10）—— `Tab` 或 `/mode [normal|plan|auto]` 循环切换：
+
+| 模式 | 行为 |
+|---|---|
+| `normal` | 直接执行（默认） |
+| `plan` | 强制只读调研 → `submit_plan` 结构化计划 → **引擎级确认门**（批准前写操作物理封锁）→ 批准后同轮自动执行；拒绝可附反馈驱动计划修订 |
+| `auto` | 1-3 句轻量计划前置，随后全程免确认自动执行到底 |
+
+plan 模式下路由层硬封锁 `modify_file` 与变更性终端命令（只读白名单：`ls/cat/grep/rg/git status|log|diff|show` 等）；确认门由引擎强制而非模型自觉。非交互前端（`-p` / REPL）确认门自动批准并打印计划。
+
+TUI 按键：`Enter` 发送 / 执行高亮命令 · `Tab` 切换模式（普通 → 规划 → 自动）· `↑/↓` 历史输入或菜单导航 · `Esc` 取消当轮 / 关闭浮层 · `Ctrl+P` 会话历史选择器（最近 3 条）· `Ctrl+C` 生成中=取消 / 空闲=退出。输入 `/` 弹出斜杠命令菜单（实时过滤）：`/help` `/new` `/clear` `/mode` `/model` `/language` `/status` `/version` `/resume` `/export` `/init` `/exit`。界面语言经 `/language` 切换（默认英文）；`/model` 持久化全部通道模型；归档会话每项目硬上限 3 条（长期记忆在状态流形，而非对话磁带）。
 
 环境变量：
 

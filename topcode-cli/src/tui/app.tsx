@@ -4,6 +4,7 @@ import TextInput from 'ink-text-input';
 import * as fs from 'fs';
 import * as path from 'path';
 import { AgentSessionService } from '../agents/agent-session.service';
+import { AgentModeService, AgentMode } from '../agents/agent-mode.service';
 import {
   LlmProviderService, Locale, loadUserLanguage, saveUserLanguage, saveUserModel,
 } from '../providers/llm-provider';
@@ -16,12 +17,13 @@ import { SetupWizard } from './setup-wizard';
 type ItemKind = TranscriptEntry['kind'];
 interface Item { id: number; kind: ItemKind; text: string }
 
-type OverlayKind = 'language' | 'model' | 'history';
+type OverlayKind = 'language' | 'model' | 'history' | 'plan' | 'plan-feedback';
 
 export interface AppProps {
   session: AgentSessionService;
   llm: LlmProviderService;
   history: SessionHistoryService;
+  modes: AgentModeService;
   version: string;
 }
 
@@ -46,7 +48,7 @@ function TranscriptItem({ item }: { item: Item }): JSX.Element {
 }
 
 /** TopCode TUI 根组件：转录区（Static）+ 流式活动区 + 状态栏 + 输入框 + 浮层/补全菜单 */
-export function App({ session, llm, history, version }: AppProps): JSX.Element {
+export function App({ session, llm, history, modes, version }: AppProps): JSX.Element {
   const { exit } = useApp();
   const [items, setItems] = useState<Item[]>([]);
   const [stream, setStream] = useState('');
@@ -61,6 +63,7 @@ export function App({ session, llm, history, version }: AppProps): JSX.Element {
   const [overlay, setOverlay] = useState<OverlayKind | null>(null);
   const [menuIdx, setMenuIdx] = useState(0);
   const [menuClosed, setMenuClosed] = useState(false);
+  const [mode, setModeState] = useState<AgentMode>(modes.getMode()); // M10 执行姿态（UI 镜像，真源在 service）
   // Static 内部游标只随 items.length 单调更新：resume 重建转录后必须靠 key 重挂载才能整体渲染
   const [epoch, setEpoch] = useState(0);
   const idRef = useRef(0);
@@ -99,6 +102,19 @@ export function App({ session, llm, history, version }: AppProps): JSX.Element {
     setLocale(l);
     pushItem('notice', STRINGS[l].notices.languageSet);
   }, [pushItem]);
+
+  // M10 模式切换：service 是真源（引擎/路由共享），React state 仅作渲染镜像
+  const applyMode = useCallback((m: AgentMode, notify = true) => {
+    modes.setMode(m);
+    setModeState(m);
+    if (notify) pushItem('notice', STRINGS[loadUserLanguage()].notices.modeSet(STRINGS[loadUserLanguage()].modes[m]));
+  }, [modes, pushItem]);
+
+  const cycleMode = useCallback((): AgentMode => {
+    const next = modes.cycle();
+    setModeState(next);
+    return next;
+  }, [modes]);
 
   const openHistory = useCallback(() => {
     if (history.listArchived().length === 0) {
@@ -146,6 +162,7 @@ export function App({ session, llm, history, version }: AppProps): JSX.Element {
     return [
       `${s.status.title} — TopCode v${version}`,
       `  ${L.language}: ${locale}`,
+      `  ${L.mode}: ${s.modes[mode]} (Tab)`,
       `  ${L.category}: ${d.category}`,
       `  ${L.models}: ${Object.entries(d.models).map(([k, v]) => `${k}=${v}`).join(', ')}`,
       `  ${L.baseUrl}: ${d.base_url}`,
@@ -170,6 +187,9 @@ export function App({ session, llm, history, version }: AppProps): JSX.Element {
     },
     exportTranscript,
     statusText,
+    getMode: () => modes.getMode(),
+    cycleMode,
+    setMode: (m: AgentMode) => applyMode(m, false),
     version,
   };
 
@@ -220,6 +240,12 @@ export function App({ session, llm, history, version }: AppProps): JSX.Element {
             const text = `[interceptor abort: ${ev.reason}] ${ev.detail}`;
             pushItem('abort', text); turnEntries.push({ kind: 'abort', text }); break;
           }
+          case 'plan_ready':
+            // M10 确认门：计划落转录区持久可见，浮层只做裁决（批准/拒绝）
+            commitStream();
+            pushItem('system', ev.text); turnEntries.push({ kind: 'system', text: ev.text });
+            setOverlay('plan');
+            break;
           case 'done':
             commitStream();
             if (ev.cancelled) { pushItem('notice', s.notices.cancelled); turnEntries.push({ kind: 'notice', text: s.notices.cancelled }); }
@@ -250,6 +276,14 @@ export function App({ session, llm, history, version }: AppProps): JSX.Element {
       if (busy) session.cancel();
       return;
     }
+    if (key.tab) {
+      // M10：空闲时 Tab 循环执行姿态（菜单展开时 Tab 不抢补全语义——补全本就靠 ↑/↓+Enter）
+      if (!busy) {
+        const next = cycleMode();
+        pushItem('notice', s.notices.modeSet(s.modes[next]));
+      }
+      return;
+    }
     if (busy) return;
     if (key.upArrow) {
       if (menuVisible) { setMenuIdx((i) => Math.max(0, i - 1)); return; }
@@ -269,12 +303,14 @@ export function App({ session, llm, history, version }: AppProps): JSX.Element {
   }
 
   const desc = llm.describe();
+  const modeColor = mode === 'plan' ? 'yellow' : mode === 'auto' ? 'magenta' : 'gray';
 
   return (
     <Box flexDirection="column">
       <Box borderStyle="round" borderColor="cyan" paddingX={1} justifyContent="space-between">
         <Text bold color="cyan">{`TopCode v${version}`}</Text>
         <Text dimColor>{`${desc.category} · ${currentModel()} · ${process.cwd()}`}</Text>
+        <Text bold color={modeColor}>{`[${s.modes[mode]}]`}</Text>
       </Box>
       <Static key={epoch} items={items}>
         {(item) => <TranscriptItem key={item.id} item={item} />}
@@ -313,6 +349,32 @@ export function App({ session, llm, history, version }: AppProps): JSX.Element {
           }))}
           onSelect={(it) => { setOverlay(null); resumeSession(it.value); }}
           onCancel={() => setOverlay(null)}
+        />
+      )}
+      {overlay === 'plan' && (
+        <SelectList
+          title={s.plan.title}
+          items={[
+            { value: 'approve', label: `✔ ${s.plan.approve}` },
+            { value: 'reject', label: `✘ ${s.plan.reject}` },
+          ]}
+          onSelect={(it) => {
+            if (it.value === 'approve') {
+              setOverlay(null);
+              session.confirmPlan(true);
+            } else {
+              setOverlay('plan-feedback'); // 拒绝需附反馈，驱动计划修订循环
+            }
+          }}
+          onCancel={() => { setOverlay(null); session.cancel(); }} // Esc = 取消当轮
+        />
+      )}
+      {overlay === 'plan-feedback' && (
+        <TextPrompt
+          title={s.plan.feedbackTitle}
+          hint={s.plan.feedbackHint}
+          onSubmit={(v) => { setOverlay(null); session.confirmPlan(false, v); }}
+          onCancel={() => { setOverlay(null); session.cancel(); }}
         />
       )}
       {!overlay && menuVisible && (

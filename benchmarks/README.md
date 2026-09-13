@@ -12,7 +12,8 @@ benchmarks/
 ├── suites/               # 靶场（Path A）
 │   ├── bench-01-todo-cli/        # 基础闭环 + Kernel Prompt 协议遵从
 │   ├── bench-02-api-server/      # 剪枝器（长报错压缩）+ 多步闭环 + hash 锚定重构
-│   └── bench-03-context-stress/  # 投影引擎压力测试（50 断言中 3 关键）
+│   ├── bench-03-context-stress/  # 投影引擎压力测试（50 断言中 3 关键）
+│   └── bench-04-modes/           # M10 执行姿态：plan 确认门结构 + auto 无门干扰（tasks.json 支持 mode 字段）
 ├── component/            # 组件白盒基准（Path B，零 LLM 成本）
 │   ├── projection.bench.ts       # 投影召回/精确率
 │   └── pruner.bench.ts           # 剪枝信息保真/压缩率

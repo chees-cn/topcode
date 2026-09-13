@@ -3,7 +3,7 @@
  * 新增 Action 必须四处同步：Kernel Prompt / 本文件 / 对应 Tool / 测试
  */
 
-export const ACTIONS = ['read_file', 'modify_file', 'run_terminal', 'query_ast_graph'] as const;
+export const ACTIONS = ['read_file', 'modify_file', 'run_terminal', 'query_ast_graph', 'submit_plan'] as const;
 export type ActionName = (typeof ACTIONS)[number];
 
 export interface ActionEnvelope {
@@ -23,6 +23,12 @@ export interface ModifyFilePayload {
   edits?: EditBlock[];          // L1 主力层
   full_content?: string;        // L2 兜底层：全量重写
   create_if_missing?: boolean;
+}
+
+/** M10 plan 模式确认门载体：计划提交由会话引擎拦截（不经 Tool 落盘） */
+export interface SubmitPlanPayload {
+  plan: string;                 // 完整计划（markdown：目标/调研发现/步骤路径/风险）
+  steps?: string[];             // 结构化步骤清单（可选）
 }
 
 export function validateAction(raw: unknown): ActionEnvelope | { error: string } {

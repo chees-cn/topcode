@@ -1,0 +1,23 @@
+{
+  "suite": "bench-04-modes",
+  "defaults": {
+    "timeout_s": 300,
+    "budgets": { "max_actions": 14, "max_est_tokens": 60000 }
+  },
+  "tasks": [
+    {
+      "id": "plan-gate-execute",
+      "mode": "plan",
+      "prompt": "为 src/calc.js 的 Calc 类添加 divide(a, b) 方法：b 为 0 时抛出 Error('division by zero')；同步在 test/calc.test.js 补充对应测试；最后运行测试确认全部通过。",
+      "grader": "graders/plan-gate-execute.mjs",
+      "budgets": { "max_actions": 14, "max_est_tokens": 60000 }
+    },
+    {
+      "id": "auto-execute",
+      "mode": "auto",
+      "prompt": "为 src/calc.js 的 Calc 类添加 divide(a, b) 方法：b 为 0 时抛出 Error('division by zero')；同步在 test/calc.test.js 补充对应测试；最后运行测试确认全部通过。",
+      "grader": "graders/auto-execute.mjs",
+      "budgets": { "max_actions": 10, "max_est_tokens": 40000 }
+    }
+  ]
+}

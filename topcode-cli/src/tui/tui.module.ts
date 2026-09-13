@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import type { AgentSessionService } from '../agents/agent-session.service';
+import type { AgentModeService } from '../agents/agent-mode.service';
 import type { LlmProviderService } from '../providers/llm-provider';
 import type { SessionHistoryService } from '../core/session-history/session-history.service';
 
@@ -14,6 +15,7 @@ export interface TuiDeps {
   session: AgentSessionService;
   llm: LlmProviderService;
   history: SessionHistoryService;
+  modes: AgentModeService;
   version: string;
 }
 

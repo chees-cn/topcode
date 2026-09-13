@@ -172,9 +172,20 @@ npm test
 topcode                  # Ink TUI (default; auto-degrades to readline REPL on non-TTY)
 topcode --no-tui         # force legacy REPL (prompt: topcode>; /exit or /quit to leave)
 topcode -p "<prompt>"    # non-interactive single-shot (transient failures degrade gracefully)
+topcode -p "<prompt>" --mode plan   # headless plan mode (gate auto-approves, plan is printed)
 ```
 
-TUI keys: `Enter` send / run highlighted command · `↑/↓` input history or menu · `Esc` cancel / close overlay · `Ctrl+P` session history picker (last 3) · `Ctrl+C` cancel (busy) / exit (idle). Typing `/` opens a slash-command menu with live filtering: `/help` `/new` `/clear` `/model` `/language` `/status` `/version` `/resume` `/export` `/init` `/exit`. UI language is switchable via `/language` (English default); `/model` persists the model for all lanes; archived sessions are capped at 3 per project (long-term memory lives in the state manifold, not chat tapes).
+Execution postures (M10) — cycle with `Tab` or `/mode [normal|plan|auto]`:
+
+| Mode | Behavior |
+|---|---|
+| `normal` | Direct execution (default) |
+| `plan` | Forced read-only research → structured plan via `submit_plan` → **engine-level confirmation gate** (writes physically blocked until you approve) → approved plan executes autonomously in the same turn; rejection with feedback drives plan revision |
+| `auto` | Lightweight 1-3 sentence plan preamble, then fully autonomous execution to completion — no confirmation interrupts |
+
+In plan mode the router hard-blocks `modify_file` and mutating terminal commands (read-only whitelist: `ls/cat/grep/rg/git status|log|diff|show`…); the gate is enforced by the engine, not by model compliance. In non-interactive frontends (`-p` / REPL) the gate auto-approves and prints the plan.
+
+TUI keys: `Enter` send / run highlighted command · `Tab` cycle mode (normal → plan → auto) · `↑/↓` input history or menu · `Esc` cancel / close overlay · `Ctrl+P` session history picker (last 3) · `Ctrl+C` cancel (busy) / exit (idle). Typing `/` opens a slash-command menu with live filtering: `/help` `/new` `/clear` `/mode` `/model` `/language` `/status` `/version` `/resume` `/export` `/init` `/exit`. UI language is switchable via `/language` (English default); `/model` persists the model for all lanes; archived sessions are capped at 3 per project (long-term memory lives in the state manifold, not chat tapes).
 
 Environment variables:
 
