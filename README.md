@@ -6,7 +6,7 @@
 >
 > Underlying paradigm: **Topological Wavefront Execution** · Positioning: a direct competitor to Claude Code.
 
-**Current version: v0.7.0** · License: AGPL-3.0 · Runtime: Node.js + NestJS + TypeScript
+**Current version: v0.8.2** · License: AGPL-3.0 · Runtime: Node.js + NestJS + TypeScript
 
 ---
 
@@ -69,7 +69,7 @@ Full argumentation in [`研究纲领.md`](研究纲领.md) (the paradigm constit
 - **Event-sourced state manifold (M2)**: `topcode-journal.jsonl` (append-only, crash-replayable) + `topcode-state.json` (atomic snapshot); assertion half-life decay `conf × 0.5^(age/half_life)` with automatic re-verification of stale knowledge.
 - **LSP diagnostic feedback (M4)**: lazily spawned `typescript-language-server` over `vscode-jsonrpc`; post-edit diagnostics are diffed and compressed into assertions within 2s.
 - **Four-layer memory model (M6)**: L0 kernel constitution / L1 rule files / L2 manifold assertions / L3 distilled markdown; L2→L3 distillation is **data-driven** (survived >30 days + referenced by ≥3 tasks), not model whim.
-- **Constitution loading mechanism (M7)**: a four-stage rule loop — Load (hierarchical discovery, nearest-first, hot reload) → Inject (three-segment ≤8K cap, visible trimming) → Enforce (code-level enforcement > prompts) → Verify ("a rule without a test does not exist"); declarative hard guards via `DENY_WRITE:` / `DENY_CMD:`.
+- **Constitution loading mechanism (M7)**: a four-stage rule loop — Load (hierarchical discovery, nearest-first, hot reload) → Inject (three segments: **the rule chain is always injected in full and never trimmed**; only the elastic projection is budgeted, trimming is visible) → Enforce (code-level enforcement > prompts) → Verify ("a rule without a test does not exist"); declarative hard guards via `DENY_WRITE:` / `DENY_CMD:`.
 - **Attribution tracer**: set `TOPCODE_TRACE` to emit `run-trace.jsonl` — system prompt, projection text, every action & assertion, token estimates, config hash — the single source of truth for evaluation attribution.
 - **Eval-Driven Iteration (EDI)**: 3 black-box suites / 11 tasks + component-level white-box benchmarks + an A/B paired-experiment protocol; optimizations merge only on significant improvement.
 
@@ -114,7 +114,7 @@ Full argumentation in [`研究纲领.md`](研究纲领.md) (the paradigm constit
 ```text
 user input
   → Projection engine computes minimal sufficient context (P1)
-  → Constitution injector assembles 3-segment system prompt (≤8K cap)
+  → Constitution injector assembles 3-segment system prompt (rules complete, never trimmed)
   → LLM streams → interceptor parses ```json action blocks in real time
   → abort on close → hard schema validation → RouterAgent dispatches ToolService
   → (high-risk ops: git snapshot escape hatch; file edits: inscription L1/L2)
@@ -238,12 +238,15 @@ Provider config precedence: `[provider]` section of `topcode.config.json` > user
     "base_url": "https://api.deepseek.com/v1",
     "api_key": "sk-...",                    // ⚠️ never commit this file
     "category": "openai",                   // lexicon category: selects fence/edit-marker dialect
-    "models": { "deep": "deepseek-chat", "quick": "deepseek-chat" }
+    "models": { "deep": "deepseek-chat", "quick": "deepseek-chat" },
+    "context_window": 131072                // model context window (tokens); budget basis for the projection layer
   }
 }
 ```
 
 Rule files: discovered by walking upward from the working directory, collecting every level's `topcode.md` (also recognizes `AGENTS.md` / `CLAUDE.md`); on conflict **directory-level > project-level > user-global (`~/.topcode/rules.md`)**; supports declarative guards `DENY_WRITE:` / `DENY_CMD:` enforced in code.
+
+**Constitution injection contract**: rule files are injected **in full, always** — no budget may drop or truncate a rule. The budget derived from `context_window` (minus output/conversation reserves) applies only to the elastic projection layer (S3, ≤8K policy cap). If the rules alone exceed the usable window they are still injected complete and a visible `[SYSTEM ASSERTION]` reports the overflow, so the failure is explicit rather than a silent behavioral drift. `TOPCODE_CONTEXT_WINDOW` overrides the default (128K).
 
 ## State Files & Memory System
 

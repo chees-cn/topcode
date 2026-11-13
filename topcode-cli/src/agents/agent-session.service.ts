@@ -16,7 +16,7 @@ const MAX_MALFORMED_RETRIES = 2; // 畸形/截断动作块的自愈重发上限�
 
 /** UI 无关的会话事件流：TUI / 纯文本 / REPL 三种前端共享同一事件源（P6） */
 export type UiEvent =
-  | { type: 'notice'; text: string }        // 规则裁剪等提示（黄）
+  | { type: 'notice'; text: string }        // 预算裁剪/窗口超限等可见提示（黄）
   | { type: 'text'; delta: string }         // 经拦截器过滤后的可见文本增量
   | { type: 'assertion'; text: string }     // [SYSTEM ASSERTION] 动作结果断言（青）
   | { type: 'plan_ready'; text: string }    // M10 plan 模式确认门：计划待用户裁决
@@ -95,9 +95,14 @@ export class AgentSessionService {
 
     // 投影（P1）：针对当前输入计算最小充分上下文
     const dynamicContext = this.projection.project(input);
-    const { system, trimmedNotices } = this.injector.buildSystemPrompt(KERNEL_PROMPT + modePrompt, dynamicContext);
-
     const providerDesc = this.llm.describe();
+    // 规则（S2）完整注入；预算只约束投影（弹性层），窗口额度由 provider 配置提供
+    const { system, trimmedNotices } = this.injector.buildSystemPrompt(
+      KERNEL_PROMPT + modePrompt,
+      dynamicContext,
+      { contextWindow: providerDesc.context_window },
+    );
+
     const configHash = this.tracer.configHash({ kernel: KERNEL_PROMPT, category: providerDesc.category, ...providerDesc.models });
     this.tracer.start({ cwd: process.cwd(), prompt: input, config_hash: configHash, provider: providerDesc });
     this.tracer.record({ type: 'projection', chars: dynamicContext.length, est_tokens: estTokens(dynamicContext), content: dynamicContext });

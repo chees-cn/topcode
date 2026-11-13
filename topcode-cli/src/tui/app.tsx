@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Box, Static, Text, useApp, useInput } from 'ink';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Box, Static, Text, useApp, useInput, useStdout } from 'ink';
 import TextInput from 'ink-text-input';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -28,6 +28,11 @@ export interface AppProps {
 }
 
 const SPINNER = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+
+/** 整屏复位（清视口 + 清回滚缓冲 + 光标归位）：resize 后重建绘制基准 */
+export const SCREEN_RESET = '\x1b[2J\x1b[3J\x1b[H';
+/** resize 风暴合并窗口：拖动窗口时只在停稳后做一次全量重排 */
+const RESIZE_SETTLE_MS = 80;
 
 function TranscriptItem({ item }: { item: Item }): JSX.Element {
   switch (item.kind) {
@@ -70,9 +75,46 @@ export function App({ session, llm, history, modes, version }: AppProps): JSX.El
 
   const s = STRINGS[locale];
 
+  const { stdout } = useStdout();
+  // ink 的 stdout 上下文在非 TTY 环境下可能缺省；回落到 process.stdout（布局宽度同样以它为准）
+  const out = stdout ?? process.stdout;
+  const lastSizeRef = useRef({ columns: out.columns ?? 0, rows: out.rows ?? 0 });
+  const resizeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // resize 自愈：ink 3 的 log-update 按"上一帧逻辑行数"回退光标，而终端宽度变化会让既有行
+  // 重新折行（物理行数 ≠ 上次记录），回退错位 → 残帧逐帧叠加（发现日志 2026-11-13）。
+  // 根治方式：停稳后整屏复位 + 重挂载 Static，让转录区按新宽度完整重排，ink 再从顶端绘制动态区。
+  useEffect(() => {
+    const handleResize = () => {
+      const columns = out.columns ?? 0;
+      const rows = out.rows ?? 0;
+      if (columns === lastSizeRef.current.columns && rows === lastSizeRef.current.rows) return;
+      lastSizeRef.current = { columns, rows };
+      if (resizeTimerRef.current) clearTimeout(resizeTimerRef.current);
+      resizeTimerRef.current = setTimeout(() => {
+        resizeTimerRef.current = null;
+        out.write(SCREEN_RESET);
+        setEpoch((e) => e + 1); // 重挂载 Static：全量转录按新宽度重排
+      }, RESIZE_SETTLE_MS);
+    };
+    out.on('resize', handleResize);
+    return () => {
+      out.off('resize', handleResize);
+      if (resizeTimerRef.current) clearTimeout(resizeTimerRef.current);
+    };
+  }, [out]);
+
   const pushItem = useCallback((kind: ItemKind, text: string) => {
     setItems((prev) => [...prev, { id: ++idRef.current, kind, text }]);
   }, []);
+
+  // Static 必须恒有至少一条静态输出：ink 仅在 staticOutput 非空时无条件重绘，
+  // 否则 resize 整屏复位后若动态区输出未变会被 diff 跳过 → 空白屏。
+  // 会话横幅本身也是有价值的状态（启动版本 + 会话 id），不是测试专用桩。
+  const sessionBanner: Item = useMemo(
+    () => ({ id: -1, kind: 'system', text: `TopCode v${version} · session ${history.current().id}` }),
+    [version, history],
+  );
 
   useEffect(() => {
     if (!busy) return;
@@ -314,7 +356,7 @@ export function App({ session, llm, history, modes, version }: AppProps): JSX.El
         <Text dimColor>{`${desc.category} · ${currentModel()} · ${process.cwd()}`}</Text>
         <Text bold color={modeColor}>{`[${s.modes[mode]}]`}</Text>
       </Box>
-      <Static key={epoch} items={items}>
+      <Static key={epoch} items={[sessionBanner, ...items]}>
         {(item) => <TranscriptItem key={item.id} item={item} />}
       </Static>
       {stream ? <Text>{stream}</Text> : null}

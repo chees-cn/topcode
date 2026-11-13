@@ -6,7 +6,7 @@
 >
 > 底层范式：**拓扑波前执行（Topological Wavefront Execution）** · 定位：Claude Code 的直接竞争者。
 
-**当前版本：v0.7.0** · License: AGPL-3.0 · 运行时：Node.js + NestJS + TypeScript
+**当前版本：v0.8.2** · License: AGPL-3.0 · 运行时：Node.js + NestJS + TypeScript
 
 ---
 
@@ -69,7 +69,7 @@ TopCode 的新公理：
 - **事件溯源状态流形（M2）**：`topcode-journal.jsonl`（只追加，崩溃可重放）+ `topcode-state.json`（原子写快照）；断言半衰期衰减 `conf × 0.5^(age/half_life)`，过期自动再验证。
 - **LSP 诊断回灌（M4）**：`vscode-jsonrpc` 懒启动 `typescript-language-server`，编辑后 2s 内诊断差分压缩为断言回灌。
 - **四层记忆模型（M6）**：L0 内核宪法 / L1 规则文件 / L2 流形断言 / L3 蒸馏 markdown；L2→L3 蒸馏**数据驱动**（存活>30 天 + 被≥3 任务引用），非模型心血来潮。
-- **宪法加载机制（M7）**：规则「加载（层级发现、就近优先、热更新）→ 注入（三段式 ≤8K 红线，裁剪可见）→ 执行（代码强制 > 提示词）→ 验证（规则无测试 = 规则不存在）」四层闭环；支持 `DENY_WRITE:` / `DENY_CMD:` 声明式硬守卫。
+- **宪法加载机制（M7）**：规则「加载（层级发现、就近优先、热更新）→ 注入（三段式：**规则链永远完整注入、绝不裁剪**，预算只约束弹性投影层，裁剪可见）→ 执行（代码强制 > 提示词）→ 验证（规则无测试 = 规则不存在）」四层闭环；支持 `DENY_WRITE:` / `DENY_CMD:` 声明式硬守卫。
 - **归因仪表**：`TOPCODE_TRACE` 激活 `run-trace.jsonl`，记录 system prompt / 投影原文 / 每步动作与断言 / token 估算 / config hash —— 评测归因唯一事实源。
 - **评测驱动迭代（EDI）**：3 个黑盒靶场 11 任务 + 组件白盒基准 + A/B 配对实验协议，任何优化显著提升才合入。
 
@@ -111,7 +111,7 @@ TopCode 的新公理：
 ```text
 用户输入
   → 投影引擎计算最小充分上下文 (P1)
-  → 宪法注入器组装三段式 system prompt (≤8K 红线)
+  → 宪法注入器组装三段式 system prompt（规则完整、永不裁剪）
   → LLM 流式生成 → 拦截器实时解析 ```json 动作块
   → 闭合即 abort → schema 硬校验 → RouterAgent 分发 ToolService
   → (高危操作: git 快照逃生舱; 文件编辑: 落笔协议 L1/L2)
@@ -235,12 +235,15 @@ Provider 配置优先级：`topcode.config.json` 的 `[provider]` 节 > 用户�
     "base_url": "https://api.deepseek.com/v1",
     "api_key": "sk-...",                    // ⚠️ 严禁提交入库
     "category": "openai",                   // 词法表类别: 决定围栏/编辑标记方言
-    "models": { "deep": "deepseek-chat", "quick": "deepseek-chat" }
+    "models": { "deep": "deepseek-chat", "quick": "deepseek-chat" },
+    "context_window": 131072                // 模型上下文窗口（token），投影层预算的核算基准
   }
 }
 ```
 
 规则文件：自工作目录向上遍历收集每一级 `topcode.md`（兼容 `AGENTS.md` / `CLAUDE.md`），冲突时 **目录级 > 项目级 > 用户全局级（`~/.topcode/rules.md`）**；支持 `DENY_WRITE:` / `DENY_CMD:` 声明式守卫，代码级强制。
+
+**宪法注入契约**：规则文件**永远完整注入**——任何预算都不得丢弃或截断规则内容。由 `context_window`（扣除输出/对话预留）推导的额度只作用于弹性投影层（S3，P1 红线 ≤8K）。若规则总量本身超过可用窗口，仍完整注入，并以可见的 `[SYSTEM ASSERTION]` 报告超限——让失败可观测，而不是静默的行为漂移。`TOPCODE_CONTEXT_WINDOW` 可覆盖默认窗口（128K）。
 
 ## 状态文件与记忆体系
 

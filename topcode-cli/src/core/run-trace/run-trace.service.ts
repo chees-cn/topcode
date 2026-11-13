@@ -9,7 +9,31 @@ export interface TraceEvent {
 }
 
 export const CHARS_PER_TOKEN = 4;
-export const estTokens = (text: string): number => Math.ceil(text.length / CHARS_PER_TOKEN);
+
+/**
+ * CJK 判定：汉字/假名/谚文/全角标点按 ~1 字/token 计。
+ * 旧实现统一按 4 字符/token 估算，对中文为主的规则文件低估约 3~4 倍，
+ * 曾使 S2 预算过早判定超限（发现日志 2026-11-13）。
+ */
+export function isCjkCodePoint(cp: number): boolean {
+  return (cp >= 0x2e80 && cp <= 0x9fff)     // CJK 部首/标点/假名/统一表意文字
+    || (cp >= 0xac00 && cp <= 0xd7af)       // 谚文音节
+    || (cp >= 0xf900 && cp <= 0xfaff)       // CJK 兼容表意文字
+    || (cp >= 0xfe30 && cp <= 0xfe4f)       // CJK 兼容形式
+    || (cp >= 0xff00 && cp <= 0xff60)       // 全角字符
+    || cp >= 0x20000;                       // CJK 扩展 B 及以后
+}
+
+/** 粗略 token 估算（预算用途，非计费）：CJK 1 字 ≈ 1 token，其余 4 字符 ≈ 1 token */
+export const estTokens = (text: string): number => {
+  let cjk = 0;
+  let total = 0;
+  for (const ch of text) {
+    total++;
+    if (isCjkCodePoint(ch.codePointAt(0) ?? 0)) cjk++;
+  }
+  return cjk + Math.ceil((total - cjk) / CHARS_PER_TOKEN);
+};
 
 /**
  * RunTracer —— 评测归因仪表（被动观察者铁律）

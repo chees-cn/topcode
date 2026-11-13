@@ -15,6 +15,7 @@ export interface ProviderConfig {
   api_key: string;
   models: Record<string, string>;   // 类别路由: deep/quick/... → 模型名（类别路由而非模型路由）
   category: ModelCategory;          // 词法表类别
+  context_window?: number;          // 模型上下文窗口（token）；缺省 128K，用于宪法/投影预算核算
 }
 
 /** UI 语言：默认英文（用户宪法裁决） */
@@ -65,11 +66,16 @@ export function saveUserModel(model: string): string {
   return writeUserConfigRaw({ ...raw, provider: { ...provider, models } });
 }
 
+const DEFAULT_CONTEXT_WINDOW = Number(process.env.TOPCODE_CONTEXT_WINDOW) > 0
+  ? Number(process.env.TOPCODE_CONTEXT_WINDOW)
+  : 128_000;
+
 const DEFAULT_CONFIG: ProviderConfig = {
   base_url: process.env.TOPCODE_BASE_URL ?? 'https://api.openai.com/v1',
   api_key: process.env.TOPCODE_API_KEY ?? '',
   models: { deep: process.env.TOPCODE_MODEL ?? 'gpt-4o', quick: process.env.TOPCODE_MODEL ?? 'gpt-4o' },
   category: (process.env.TOPCODE_CATEGORY as ModelCategory) ?? 'openai',
+  context_window: DEFAULT_CONTEXT_WINDOW,
 };
 
 const RETRYABLE_STATUS = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
@@ -120,8 +126,15 @@ export class LlmProviderService {
   }
 
   /** 被动描述（归因仪表用）：绝不包含 api_key */
-  describe(): { category: string; models: Record<string, string>; base_url: string } {
-    return { category: this.config.category, models: this.config.models, base_url: this.config.base_url };
+  describe(): { category: string; models: Record<string, string>; base_url: string; context_window: number } {
+    return {
+      category: this.config.category,
+      models: this.config.models,
+      base_url: this.config.base_url,
+      context_window: this.config.context_window && this.config.context_window > 0
+        ? this.config.context_window
+        : DEFAULT_CONTEXT_WINDOW,
+    };
   }
 
   /** 建立连接（含瞬时错误重试）；重试只发生在首字节前，流式中段失败不重试 */
