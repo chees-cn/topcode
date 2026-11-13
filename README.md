@@ -6,7 +6,7 @@
 >
 > Underlying paradigm: **Topological Wavefront Execution** · Positioning: a direct competitor to Claude Code.
 
-**Current version: v0.8.2** · License: AGPL-3.0 · Runtime: Node.js + NestJS + TypeScript
+**Current version: v0.8.3** · License: AGPL-3.0 · Runtime: Node.js + NestJS + TypeScript
 
 ---
 

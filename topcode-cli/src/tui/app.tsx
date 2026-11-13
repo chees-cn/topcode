@@ -13,6 +13,7 @@ import { STRINGS } from './i18n';
 import { CommandContext, dispatchCommand, filterCommands } from './commands';
 import { SelectList, TextPrompt } from './overlays';
 import { SetupWizard } from './setup-wizard';
+import { isCjkCodePoint } from '../core/run-trace/run-trace.service';
 
 type ItemKind = TranscriptEntry['kind'];
 interface Item { id: number; kind: ItemKind; text: string }
@@ -33,6 +34,55 @@ const SPINNER = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', 
 export const SCREEN_RESET = '\x1b[2J\x1b[3J\x1b[H';
 /** resize 风暴合并窗口：拖动窗口时只在停稳后做一次全量重排 */
 const RESIZE_SETTLE_MS = 80;
+
+/** 终端显示宽度（CJK/全角占 2 格；与 ink 的测量口径一致） */
+function displayWidth(text: string): number {
+  let w = 0;
+  for (const ch of text) w += isCjkCodePoint(ch.codePointAt(0) ?? 0) ? 2 : 1;
+  return w;
+}
+
+/** 尾部截断（保留前缀 + …） */
+function truncateEnd(text: string, max: number): string {
+  if (max <= 0) return '';
+  if (displayWidth(text) <= max) return text;
+  let out = '';
+  let w = 0;
+  for (const ch of text) {
+    const c = isCjkCodePoint(ch.codePointAt(0) ?? 0) ? 2 : 1;
+    if (w + c > max - 1) break;
+    out += ch;
+    w += c;
+  }
+  return out + '…';
+}
+
+/** 中部截断（保留头尾 + …）：用于模型/路径段，两端信息都尽量保留 */
+function truncateMiddle(text: string, max: number): string {
+  if (max <= 0) return '';
+  if (displayWidth(text) <= max) return text;
+  if (max === 1) return '…';
+  const budget = max - 1;
+  const headBudget = Math.ceil(budget / 2);
+  const tailBudget = budget - headBudget;
+  let head = '';
+  let w = 0;
+  for (const ch of text) {
+    const c = isCjkCodePoint(ch.codePointAt(0) ?? 0) ? 2 : 1;
+    if (w + c > headBudget) break;
+    head += ch;
+    w += c;
+  }
+  let tail = '';
+  w = 0;
+  for (const ch of [...text].reverse()) {
+    const c = isCjkCodePoint(ch.codePointAt(0) ?? 0) ? 2 : 1;
+    if (w + c > tailBudget) break;
+    tail = ch + tail;
+    w += c;
+  }
+  return head + '…' + tail;
+}
 
 function TranscriptItem({ item }: { item: Item }): JSX.Element {
   switch (item.kind) {
@@ -347,14 +397,25 @@ export function App({ session, llm, history, modes, version }: AppProps): JSX.El
   const desc = llm.describe();
   const modeColor = mode === 'plan' ? 'yellow' : mode === 'auto' ? 'magenta' : 'gray';
 
+  // 表头单行不变形：内容宽度 = 终端列数 − 圆角边框 2 − paddingX 2。
+  // 左（版本）/右（姿态）优先保底，中间（类别·模型·路径）吃掉剩余宽度并在中间截断，
+  // 任何宽度下三段之和都不超过内容宽度 → 永不折行（ink 的 flex truncate 在窄宽下不可靠）。
+  const headerInner = Math.max(0, (out.columns || 80) - 4);
+  const headerRight = truncateEnd(`[${s.modes[mode]}]`, Math.max(0, Math.floor(headerInner * 0.4)));
+  const headerLeft = truncateEnd(`TopCode v${version}`, Math.max(0, Math.floor(headerInner * 0.5)));
+  const headerMiddle = truncateMiddle(
+    `${desc.category} · ${currentModel()} · ${process.cwd()}`,
+    Math.max(0, headerInner - displayWidth(headerLeft) - displayWidth(headerRight) - 2),
+  );
+
   // width="100%"：ink 根节点每次渲染（含 resize 重渲染）都会 setWidth(终端列数)，
   // 根 Box 必须显式声明占满父宽，否则 Yoga 按内容收缩，布局不随窗口自适应。
   return (
     <Box flexDirection="column" width="100%">
       <Box borderStyle="round" borderColor="cyan" paddingX={1} justifyContent="space-between" width="100%">
-        <Text bold color="cyan">{`TopCode v${version}`}</Text>
-        <Text dimColor>{`${desc.category} · ${currentModel()} · ${process.cwd()}`}</Text>
-        <Text bold color={modeColor}>{`[${s.modes[mode]}]`}</Text>
+        <Text bold color="cyan">{headerLeft}</Text>
+        <Text dimColor>{headerMiddle}</Text>
+        <Text bold color={modeColor}>{headerRight}</Text>
       </Box>
       <Static key={epoch} items={[sessionBanner, ...items]}>
         {(item) => <TranscriptItem key={item.id} item={item} />}
